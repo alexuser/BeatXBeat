@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Beat x Beat</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_project_page">ProjectPageActivity</string>
+    <string name="title_activity_import_project">ImportProjectActivity</string>
+    <string name="title_activity_transcribe_page">TranscribePageActivity</string>
+    <string name="title_activity_record_clip">RecordClipActivity</string>
+
+</resources>
