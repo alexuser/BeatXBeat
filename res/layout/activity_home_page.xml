@@ -9,7 +9,7 @@
     tools:context=".HomePageActivity" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -20,10 +20,10 @@
         android:textSize="50sp" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/clipName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/timer"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="19dp"
         android:text="Presented by CDC"

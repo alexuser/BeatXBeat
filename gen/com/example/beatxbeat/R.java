@@ -22,23 +22,27 @@ public final class R {
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
-        public static final int record=0x7f020001;
-        public static final int recordicon=0x7f020002;
-        public static final int searchicon=0x7f020003;
-        public static final int stopicon=0x7f020004;
+        public static final int playicon=0x7f020001;
+        public static final int record=0x7f020002;
+        public static final int recordicon=0x7f020003;
+        public static final int searchicon=0x7f020004;
+        public static final int stopicon=0x7f020005;
     }
     public static final class id {
-        public static final int action_settings=0x7f08000b;
-        public static final int button1=0x7f080009;
+        public static final int action_settings=0x7f08000e;
+        public static final int backButton=0x7f08000d;
+        public static final int chronometer=0x7f08000c;
+        public static final int clipName=0x7f080001;
         public static final int continueProjectBtn=0x7f080003;
         public static final int editText1=0x7f080004;
         public static final int imageView1=0x7f08000a;
         public static final int importClip=0x7f080007;
         public static final int newClip=0x7f080005;
         public static final int newProjectBtn=0x7f080002;
+        public static final int playButton=0x7f08000b;
         public static final int startButton=0x7f080008;
-        public static final int textView1=0x7f080000;
-        public static final int textView2=0x7f080001;
+        public static final int stopButton=0x7f080009;
+        public static final int timer=0x7f080000;
         public static final int transcribe=0x7f080006;
     }
     public static final class layout {

@@ -8,10 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class ProjectPageActivity extends Activity {
 	
 	private Button recordBtn, importBtn, transcribeBtn;
+	private TextView clipName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,18 @@ public class ProjectPageActivity extends Activity {
 		recordBtn = (Button) findViewById(R.id.newClip);
 		importBtn = (Button) findViewById(R.id.importClip);
 		transcribeBtn = (Button) findViewById(R.id.transcribe);
+		clipName = (TextView) findViewById(R.id.clipName);
+		
+		Bundle extras = this.getIntent().getExtras();
+		
+		// File that user recorded and the path
+		String fileName = extras.getString("fileName");
+		String filePath = extras.getString("filePath");
+		
+		
+		if (filePath != null && !filePath.isEmpty()){
+			clipName.setText(fileName);
+		}
 		
 		transcribeBtn.setOnClickListener(new View.OnClickListener() {
 			

@@ -26,6 +26,7 @@ public class HomePageActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(HomePageActivity.this, ProjectPageActivity.class);
+				intent.putExtra("filePath", "");
                 startActivity(intent);
 			}
 		});
