@@ -1,9 +1,18 @@
 package com.example.beatxbeat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,7 +21,7 @@ import android.widget.TextView;
 
 public class ProjectPageActivity extends Activity {
 	
-	private Button recordBtn, importBtn, transcribeBtn;
+	private Button recordBtn, importBtn, transcribeBtn, play;
 	private TextView clipName;
 
 	@Override
@@ -26,13 +35,19 @@ public class ProjectPageActivity extends Activity {
 		recordBtn = (Button) findViewById(R.id.newClip);
 		importBtn = (Button) findViewById(R.id.importClip);
 		transcribeBtn = (Button) findViewById(R.id.transcribe);
+		play = (Button) findViewById(R.id.play);
 		clipName = (TextView) findViewById(R.id.clipName);
 		
 		Bundle extras = this.getIntent().getExtras();
 		
 		// File that user recorded and the path
 		String fileName = extras.getString("fileName");
-		String filePath = extras.getString("filePath");
+		final String filePath = extras.getString("filePath");
+		final String result = extras.getString("result");
+		
+		if (result == null || result.isEmpty()){
+			play.setVisibility(View.GONE);
+		}
 		
 		
 		if (filePath != null && !filePath.isEmpty()){
@@ -45,6 +60,7 @@ public class ProjectPageActivity extends Activity {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(ProjectPageActivity.this, TranscribePageActivity.class);
+				intent.putExtra("result", result);
                 startActivity(intent);
 			}
 		});
@@ -69,6 +85,20 @@ public class ProjectPageActivity extends Activity {
 			}
 		});
 		
+		play.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				try {
+					playAudio(filePath);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		
 	}
 
 	@Override
@@ -84,6 +114,48 @@ public class ProjectPageActivity extends Activity {
 	    startActivityForResult(myIntent, 0);
 	    return true;
 
+	}
+	
+	public void playAudio (String filePath) throws IOException
+	{
+		if (filePath==null)
+			return;
+
+		//Reading the file..
+		byte[] byteData = null; 
+		File file = null; 
+		file = new File(filePath); 
+		byteData = new byte[(int) file.length()];
+		FileInputStream in = null;
+		try {
+			in = new FileInputStream( file );
+			in.read( byteData );
+			in.close(); 
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Set and push to audio track..
+		int intSize = android.media.AudioTrack.getMinBufferSize(
+				32000, 
+				AudioFormat.CHANNEL_OUT_MONO,
+				AudioFormat.ENCODING_PCM_16BIT); 
+		AudioTrack at = new AudioTrack(AudioManager.STREAM_MUSIC, 
+				32000, 
+				AudioFormat.CHANNEL_OUT_MONO,
+				AudioFormat.ENCODING_PCM_16BIT, 
+				intSize, 
+				AudioTrack.MODE_STREAM); 
+		if (at!=null) { 
+			at.play();
+			// Write the byte array to the track
+			at.write(byteData, 0, byteData.length); 
+			at.stop();
+			at.release();
+		}
+		else
+			Log.d("TCAudio", "audio track is not initialised ");
 	}
 
 }

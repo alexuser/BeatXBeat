@@ -1,8 +1,9 @@
 package com.example.beatxbeat;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
+import android.widget.TextView;
 
 public class TranscribePageActivity extends Activity {
 
@@ -10,6 +11,12 @@ public class TranscribePageActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_transcribe_page);
+		Bundle extras = this.getIntent().getExtras();
+		
+		// File that user recorded and the path
+		String result = extras.getString("result");
+		TextView output = (TextView) findViewById(R.id.output);
+		output.setText(result);
 	}
 
 	@Override
