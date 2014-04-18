@@ -278,19 +278,25 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			@Override
 			public void run() {
 				FileOutputStream os = null;
-				File folder = new File(filePath);
-				boolean success = false;
-	            if (!folder.exists()) 
-	            {
-	            	try {
-						success = folder.createNewFile();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	            }
+				File f = new File(filePath);
+//				if (f.exists() ) {
+//					try {
+//						f.createNewFile();
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+
+//	            try {
+//					success = f.createNewFile();
+//				} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+	            
 			    try {
-			    	 os = new FileOutputStream(folder);
+			    	 os = new FileOutputStream(f);
 			    } catch (FileNotFoundException e) {
 			        e.printStackTrace();
 			    }
