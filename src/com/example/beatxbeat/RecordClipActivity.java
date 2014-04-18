@@ -127,8 +127,9 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			}
 		});
 		
-		audioFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath()
-				+ "/Beat X Beat/";
+		audioFilePath = getBaseContext().getExternalFilesDir(null) + "/state.pcm";
+				//Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath()
+				//+ "/Beat X Beat/";
 		
 		// STEP 1: set up recorder... same as in loopback example
 		int minBufferSize = AudioRecord.getMinBufferSize(
@@ -277,8 +278,19 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			@Override
 			public void run() {
 				FileOutputStream os = null;
+				File folder = new File(filePath);
+				boolean success = false;
+	            if (!folder.exists()) 
+	            {
+	            	try {
+						success = folder.createNewFile();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	            }
 			    try {
-			        os = new FileOutputStream(filePath);
+			    	 os = new FileOutputStream(folder);
 			    } catch (FileNotFoundException e) {
 			        e.printStackTrace();
 			    }
