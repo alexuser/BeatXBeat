@@ -34,7 +34,7 @@ public class ProjectPageActivity extends Activity {
 		
 		recordBtn = (Button) findViewById(R.id.newClip);
 		importBtn = (Button) findViewById(R.id.importClip);
-		transcribeBtn = (Button) findViewById(R.id.transcribe);
+		transcribeBtn = (Button) findViewById(R.id.transcribeBtn);
 		play = (Button) findViewById(R.id.play);
 		clipName = (TextView) findViewById(R.id.clipName);
 		
@@ -46,13 +46,14 @@ public class ProjectPageActivity extends Activity {
 		final String result = extras.getString("result");
 		
 		if (result == null || result.isEmpty()){
-			play.setVisibility(View.GONE);
+			transcribeBtn.setVisibility(View.GONE);
 		}
 		
 		
 		if (filePath != null && !filePath.isEmpty()){
 			clipName.setText(fileName);
 		}
+
 		
 		transcribeBtn.setOnClickListener(new View.OnClickListener() {
 			

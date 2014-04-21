@@ -9,32 +9,32 @@
     tools:context=".HomePageActivity" >
 
     <TextView
-        android:id="@+id/timer"
+        android:id="@+id/CDC"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/beatxbeat"
+        android:layout_centerHorizontal="true"
+        android:text="Presented by CDC"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/beatxbeat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="198dp"
+        android:layout_marginTop="47dp"
         android:text="Beat x Beat"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="50sp" />
-
-    <TextView
-        android:id="@+id/clipName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/timer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="19dp"
-        android:text="Presented by CDC"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
         android:id="@+id/newProjectBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/CDC"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="28dp"
         android:text="Start a New Audio Project" />
 
     <Button
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/newProjectBtn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="26dp"
         android:text="Continue on a Project" />
 
 </RelativeLayout>

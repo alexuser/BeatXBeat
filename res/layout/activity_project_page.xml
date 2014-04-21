@@ -8,69 +8,73 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ProjectPageActivity" >
 
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="14dp"
-        android:ems="10"
-        android:hint="Enter Project Name" />
-
-    <TextView
-        android:id="@+id/timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editText1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="63dp"
-        android:text="My Clips"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Button
-        android:id="@+id/newClip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/timer"
-        android:layout_marginTop="159dp"
-        android:layout_toLeftOf="@+id/timer"
-        android:text="Record New Clip" />
-
-    <Button
-        android:id="@+id/transcribe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/editText1"
-        android:layout_marginRight="21dp"
-        android:text="Transcribe" />
-
     <Button
         android:id="@+id/importClip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/newClip"
         android:layout_alignBottom="@+id/newClip"
-        android:layout_marginLeft="17dp"
-        android:layout_toRightOf="@+id/timer"
+        android:layout_toRightOf="@+id/newClip"
         android:text="Import Clip" />
+
+    <EditText
+        android:id="@+id/projectName"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="14dp"
+        android:layout_marginRight="14dp"
+        android:ems="10"
+        android:hint="Project Name" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/newClip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/timer"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="42dp"
+        android:text="Record New Clip" />
+
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/projectName"
+        android:layout_below="@+id/projectName"
+        android:layout_marginTop="21dp"
+        android:text="My Clips"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/clipName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/timer"
         android:layout_below="@+id/timer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="38dp"
+        android:text="Recordings Go Here"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
         android:id="@+id/play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/clipName"
-        android:layout_toRightOf="@+id/clipName"
+        android:layout_alignBaseline="@+id/clipName"
+        android:layout_alignBottom="@+id/clipName"
+        android:layout_alignRight="@+id/importClip"
         android:text="Play" />
+
+    <Button
+        android:id="@+id/transcribeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/projectName"
+        android:layout_alignBottom="@+id/projectName"
+        android:layout_alignParentRight="true"
+        android:text="Transcribe" />
 
 </RelativeLayout>
