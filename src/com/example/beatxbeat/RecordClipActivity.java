@@ -164,8 +164,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		stopRecording.setEnabled(true);
 		playRecording.setEnabled(false);
 		startRecording.setEnabled(false);
-		miclogo = (ImageView) findViewById(R.id.imageView1);
-		miclogo.setVisibility(View.GONE);
+//		miclogo = (ImageView) findViewById(R.id.imageView1);
+//		miclogo.setVisibility(View.GONE);
 		chrono.setBase(SystemClock.elapsedRealtime());
 		chrono.setVisibility(View.VISIBLE);
 		chrono.start();
@@ -175,8 +175,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	    // stops the recording activity
 		stopRecording.setEnabled(false);
 		playRecording.setEnabled(true);
-		ImageView miclogo = (ImageView) findViewById(R.id.imageView1);
-		miclogo.setVisibility(View.VISIBLE);
+//		ImageView miclogo = (ImageView) findViewById(R.id.imageView1);
+//		miclogo.setVisibility(View.VISIBLE);
 		chrono.setVisibility(View.INVISIBLE);
 		chrono.stop();
 		chrono.setBase(SystemClock.elapsedRealtime());
