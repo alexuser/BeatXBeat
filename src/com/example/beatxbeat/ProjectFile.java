@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -69,7 +70,7 @@ public class ProjectFile {
 			
 			Element root = mDoc.createElement(PROJECT_TYPE);
 			mDoc.appendChild(root);
-			root.setNodeValue(mName);
+			root.setTextContent(mName);
 			
 		}
 		else {
@@ -79,12 +80,12 @@ public class ProjectFile {
 			if (!root.getNodeName().equals(PROJECT_TYPE)) {
 				throw new IOException("Invalid file - file is not a BeatbyBeat project.");
 			}
-			mName = root.getNodeValue();
+			mName = root.getTextContent();
 			
 			NodeList listClips = root.getChildNodes();
 			for ( int i = 0; i < listClips.getLength(); i++ ) {
 				Node clip = listClips.item(i);
-				String clipName = clip.getNodeValue();
+				String clipName = clip.getTextContent();
 			}
 		}
 	}
@@ -116,12 +117,13 @@ public class ProjectFile {
 		    StreamResult result = new StreamResult(writer);
 		    transformer.transform(new DOMSource(mDoc), result);
 		    file.write(writer.toString().getBytes());
+		    file.close();
 		} catch (Exception e) {
 			System.out.println("Project " + mName + " has failed to save!");
 			e.printStackTrace();
 			return false;
 		}
-		Log.d("", "SAVE SUCCESSFUL");
+		Log.d("", "FILE SAVED at: " + mContext.getFilesDir().getPath() + "/beatxproject_" + mName + ".xml");
 		return true;
 	}
 
@@ -133,7 +135,7 @@ public class ProjectFile {
 	public void addClip(File pFile){
 		Element root = mDoc.getDocumentElement();
 		Element clip = mDoc.createElement("clip");
-		clip.setNodeValue(pFile.getPath());
+		clip.setTextContent(pFile.getPath());
 		root.appendChild(clip);
 		save();
 	}
@@ -149,7 +151,7 @@ public class ProjectFile {
 		Node nodeToRemove = null;
 		for ( int i = 0; i < listClips.getLength(); i++ ) {
 			Node clip = listClips.item(i);
-			if (clip.getNodeValue().equals(pFile.getPath())) {
+			if (clip.getTextContent().equals(pFile.getPath())) {
 				nodeToRemove = clip;
 			}
 		}
@@ -157,6 +159,48 @@ public class ProjectFile {
 			root.removeChild(nodeToRemove);
 			save();
 		}
+	}
+	
+	/**
+	 * Returns a list of clips. 
+	 * @return ArrayList of filename strings
+	 */
+	public ArrayList<String> getClips() {
+		ArrayList<String> listOfFilenames = new ArrayList<String>();
+		Element root = mDoc.getDocumentElement();
+		NodeList listClips = root.getChildNodes();
+		for ( int i = 0; i < listClips.getLength(); i++ ) {
+			Node clip = listClips.item(i);
+			if (clip.getNodeName().equals("clip")) {
+				String clipPath = clip.getTextContent();
+				listOfFilenames.add(clipPath.substring(clipPath.indexOf("pcm")+3));
+			}
+		}
+		return listOfFilenames;
+	}
+	
+	/**
+	 * Changes the project name. Should delete old project file and create a new one.
+	 * 
+	 * @para
+	 * m pName new project name
+	 */
+	public void setProjectName(String pName) {
+		mName = pName;
+		Element root = mDoc.getDocumentElement();
+		root.setTextContent(mName);
+		//TODO delete old file, create new file with new name
+		save();
+	}
+	
+	/**
+	 * Returns the absolute path to the directory on the filesystem where this project is stored.
+	 * 
+	 * @return Path of this project
+	 */
+	public String getProjectPath() {
+		String path = mContext.getFilesDir().getPath() + "/beatxproject_" + mName + ".xml";
+		return path;
 	}
 
 }

@@ -17,7 +17,6 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
@@ -26,7 +25,6 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.onsets.OnsetHandler;
 import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
@@ -55,6 +53,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	private be.hogent.tarsos.dsp.AudioFormat tarsosFormat;
 	private static ArrayList<Double> beatList = new ArrayList<Double>();
 	
+	private ProjectFile project;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,6 +65,15 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		playRecording = (Button) findViewById(R.id.playButton);
 		backbtn = (Button) findViewById(R.id.backButton);
 		chrono = (Chronometer) findViewById(R.id.chronometer);
+		
+		Intent intent = getIntent();
+		String message = intent.getStringExtra(ProjectPageActivity.RECORD_MESSAGE);
+		try {
+			project = new ProjectFile(this, new File(message), null);
+		} catch (Exception e1) {
+			//all purpose exception catcher
+			e1.printStackTrace();
+		}
 		
 		startRecording.setOnClickListener(new View.OnClickListener() {
 			
@@ -89,6 +98,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 					isRecording = false;
 					displayBeatTime();
 					resetRecording();
+					File clip = new File(filePath);
+					project.addClip(clip);
 				} else {
 					startRecording.setEnabled(false);
 					stop();
@@ -123,6 +134,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
                 intent.putExtra("filePath", filePath);
                 intent.putExtra("fileName", fileName);
                 intent.putExtra("result", result);
+                intent.putExtra(ProjectPageActivity.RECORD_MESSAGE, project.getProjectPath());
 				startActivity(intent);
 			}
 		});
