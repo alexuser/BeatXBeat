@@ -67,7 +67,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		chrono = (Chronometer) findViewById(R.id.chronometer);
 		
 		Intent intent = getIntent();
-		String message = intent.getStringExtra(ProjectPageActivity.RECORD_MESSAGE);
+		String message = intent.getStringExtra(ProjectPageActivity.PROJECT_PATH);
 		try {
 			project = new ProjectFile(this, new File(message), null);
 		} catch (Exception e1) {
@@ -134,7 +134,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
                 intent.putExtra("filePath", filePath);
                 intent.putExtra("fileName", fileName);
                 intent.putExtra("result", result);
-                intent.putExtra(ProjectPageActivity.RECORD_MESSAGE, project.getProjectPath());
+                intent.putExtra(ProjectPageActivity.PROJECT_PATH, project.getProjectPath());
 				startActivity(intent);
 			}
 		});

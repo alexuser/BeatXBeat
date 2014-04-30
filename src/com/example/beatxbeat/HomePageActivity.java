@@ -11,25 +11,36 @@ public class HomePageActivity extends Activity {
 
 	private Button newProject;
 	private Button continueProject;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home_page);
-		
+
 		newProject = (Button) findViewById(R.id.newProjectBtn);
 		continueProject = (Button) findViewById(R.id.continueProjectBtn);
-		
+
 		newProject.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(HomePageActivity.this, ProjectPageActivity.class);
 				intent.putExtra("filePath", "");
-                startActivity(intent);
+				startActivity(intent);
 			}
 		});
+
+		continueProject.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(HomePageActivity.this, ImportProjectActivity.class);
+				startActivity(intent);
+			}
+		});
+
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class ProjectPageActivity extends Activity {
 	private String projectName;
 
 	private ProjectFile project;
-	public final static String RECORD_MESSAGE = "com.example.beatxbeat.PROJECT_PATH";
+	public final static String PROJECT_PATH = "com.example.beatxbeat.PROJECT_PATH";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +69,14 @@ public class ProjectPageActivity extends Activity {
 		projectNameTextView = (TextView) findViewById(R.id.projectName);
 
 		try {
-			if (extras.containsKey(RECORD_MESSAGE)) {
-				project = new ProjectFile(this, new File(extras.getString(RECORD_MESSAGE)), null);
+			if (extras.containsKey(PROJECT_PATH)) {
+				project = new ProjectFile(this, new File(extras.getString(PROJECT_PATH)), null);
 				projectNameTextView.setText(project.getName());
 			} else {
 				showNamingAlert();
+//				while (projectName == null) {
+//					this.wait(1000);
+//				}
 				project = new ProjectFile(this, null, projectName);
 				project.save();
 			}
@@ -125,7 +128,7 @@ public class ProjectPageActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(ProjectPageActivity.this, RecordClipActivity.class);
-				intent.putExtra(RECORD_MESSAGE, project.getProjectPath());
+				intent.putExtra(PROJECT_PATH, project.getProjectPath());
 				startActivity(intent);
 			}
 		});
