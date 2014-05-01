@@ -18,13 +18,11 @@ import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
-import android.widget.ImageView;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.onsets.OnsetHandler;
 import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
@@ -44,7 +42,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	private static String filePath="";
 	private static String result = "";
 	private Chronometer chrono;
-	private ImageView miclogo;
+	//private ImageView miclogo;
 	
 	Thread listeningThread;
 	private AudioRecord recorder;
@@ -79,7 +77,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				showAlertBeforeRecord();
 				startRecording.setEnabled(false);
 				stopRecording.setEnabled(true);
@@ -90,7 +87,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				stopRecording.setEnabled(false);
 				playRecording.setEnabled(true);
 				if (isRecording){
@@ -99,7 +95,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 					displayBeatTime();
 					resetRecording();
 					File clip = new File(filePath);
-					project.addClip(clip);
+					project.addClip(clip, result);
 				} else {
 					startRecording.setEnabled(false);
 					stop();
@@ -112,14 +108,12 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				stopRecording.setEnabled(true);
 				startRecording.setEnabled(false);
 				playRecording.setEnabled(false);
 				try {
 					playAudio();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -129,7 +123,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				Intent intent = new Intent(RecordClipActivity.this, ProjectPageActivity.class);
                 intent.putExtra("filePath", filePath);
                 intent.putExtra("fileName", fileName);
@@ -214,7 +207,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			in.close(); 
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// Set and push to audio track..
@@ -234,9 +226,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			at.write(byteData, 0, byteData.length); 
 			at.stop();
 			at.release();
-		}
-		else
-			Log.d("TCAudio", "audio track is not initialised ");
+		} //else
+//			Log.d("TCAudio", "audio track is not initialised ");
 	}
 	
 	public void showAlertBeforeRecord()
@@ -254,7 +245,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				fileName = input.getText().toString();
 				if (!fileName.endsWith(".pcm")){
 					fileName = fileName + ".pcm";
@@ -291,22 +281,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			public void run() {
 				FileOutputStream os = null;
 				File f = new File(filePath);
-//				if (f.exists() ) {
-//					try {
-//						f.createNewFile();
-//					} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-
-//	            try {
-//					success = f.createNewFile();
-//				} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-	            
 			    try {
 			    	 os = new FileOutputStream(f);
 			    } catch (FileNotFoundException e) {
@@ -354,8 +328,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 
 	@Override
 	public void handleOnset(double time, double salience) {
-		// TODO Auto-generated method stub
-		final String s = "Clap at " + String.valueOf(time) + " seconds";
+		//final String s = "Clap at " + String.valueOf(time) + " seconds";
 		beatList.add(time);
 	}
 	

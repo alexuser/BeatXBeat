@@ -1,11 +1,11 @@
 package com.example.beatxbeat;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,6 +36,7 @@ public class ProjectFile {
 	private final String PROJECT_TYPE = "beat_project";
 	private final String CLIP_ATTRIBUTE = "clip";
 	private final String PROJECT_NAME_ATTRIBUTE = "name";
+	private final String CLIP_RESULT_ATTRIBUTE = "clip_result";
 
 
 	/**
@@ -93,19 +94,6 @@ public class ProjectFile {
 	}
 
 	/**
-	 * Attempts to open the given project. 
-	 * 
-	 * @param pFile The project file.
-	 * @throws FileNotFoundException The given project could not be found, or 
-	 * 	one of the clips contained in the project is missing.
-	 */
-	public void open(File pFile) throws FileNotFoundException{
-		//implement me
-		//I think this is already done in the constructor...
-		//TODO Think through implementation details and usage.
-	}
-
-	/**
 	 * Saves the project file onto the phone's internal storage. 
 	 * 
 	 * @return False if the project failed to save (ie some error was thrown), 
@@ -130,14 +118,16 @@ public class ProjectFile {
 	}
 
 	/**
-	 * Attempts to add the recorded clip to the project.
+	 * Attempts to add the recorded clip with its beat representation to the project.
 	 * 
 	 * @param pFile The file of the recorded clip.
+	 * @param result The string representation of the beat time of the clip.
 	 */
-	public void addClip(File pFile){
+	public void addClip(File pFile, String result){
 		Element root = mDoc.getDocumentElement();
 		Element clip = mDoc.createElement(CLIP_ATTRIBUTE);
 		clip.setAttribute(CLIP_ATTRIBUTE, pFile.getPath());
+		clip.setAttribute(CLIP_RESULT_ATTRIBUTE, result);
 		root.appendChild(clip);
 		save();
 	}
@@ -166,7 +156,7 @@ public class ProjectFile {
 	}
 
 	/**
-	 * Returns a list of clips. 
+	 * Returns a list of paths of clips. 
 	 * @return ArrayList of filename strings
 	 */
 	public ArrayList<String> getClips() {
@@ -177,10 +167,30 @@ public class ProjectFile {
 			Element clip = (Element) listClips.item(i);
 			if (clip.hasAttribute(CLIP_ATTRIBUTE)) {
 				String clipPath = clip.getAttribute(CLIP_ATTRIBUTE);
-				listOfFilenames.add(clipPath.substring(clipPath.indexOf("pcm")+3));
+				listOfFilenames.add(clipPath);
 			}
 		}
 		return listOfFilenames;
+	}
+	
+	/**
+	 * Returns a hashmap mapping the clip name to the clip beat result. 
+	 * @return HashMap of clipnames mapped to the clip result
+	 */
+	public HashMap<String, String> getClipResults() {
+		HashMap<String, String> results = new HashMap<String, String>();
+		Element root = mDoc.getDocumentElement();
+		NodeList listClips = root.getChildNodes();
+		for ( int i = 0; i < listClips.getLength(); i++ ) {
+			Element clip = (Element) listClips.item(i);
+			if (clip.hasAttribute(CLIP_ATTRIBUTE)) {
+				String clipPath = clip.getAttribute(CLIP_ATTRIBUTE);
+				String clipName = clipPath.substring(clipPath.indexOf("pcm")+3);
+				String clipResult = clip.getAttribute(CLIP_RESULT_ATTRIBUTE);
+				results.put(clipName, clipResult);
+			}
+		}
+		return results;
 	}
 
 	/**
@@ -216,7 +226,5 @@ public class ProjectFile {
 		String path = mContext.getFilesDir().getPath() + "/beatxproject_" + mName + ".xml";
 		return path;
 	}
-
-
 
 }

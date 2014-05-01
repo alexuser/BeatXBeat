@@ -28,8 +28,8 @@ import android.widget.TextView;
 
 public class ProjectPageActivity extends Activity {
 
-	private Button recordBtn, importBtn, transcribeBtn, play;
-	private TextView clipName, projectNameTextView;
+	private Button recordBtn, importBtn, transcribeBtn;
+	private TextView projectNameTextView;
 	private String projectName;
 
 	private ProjectFile project;
@@ -46,25 +46,8 @@ public class ProjectPageActivity extends Activity {
 		recordBtn = (Button) findViewById(R.id.newClip);
 		importBtn = (Button) findViewById(R.id.importClip);
 		transcribeBtn = (Button) findViewById(R.id.transcribeBtn);
-		play = (Button) findViewById(R.id.play);
-		//clipName = (TextView) findViewById(R.id.clipName);
-
 
 		Bundle extras = this.getIntent().getExtras();
-
-		// File that user recorded and the path
-		String fileName = extras.getString("fileName");
-		final String filePath = extras.getString("filePath");
-		final String result = extras.getString("result");
-
-		//		if (result == null || result.isEmpty()){
-		//			transcribeBtn.setVisibility(View.GONE);
-		//		}
-		//		
-		//		
-		//		if (filePath != null && !filePath.isEmpty()){
-		//			clipName.setText(fileName);
-		//		}
 
 		projectNameTextView = (TextView) findViewById(R.id.projectName);
 
@@ -102,50 +85,32 @@ public class ProjectPageActivity extends Activity {
 		}
 		
 		transcribeBtn.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				Intent intent = new Intent(ProjectPageActivity.this, TranscribePageActivity.class);
-				intent.putExtra("result", result);
+				intent.putExtra(PROJECT_PATH, project.getProjectPath());
 				startActivity(intent);
 			}
 		});
 
 		importBtn.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				Intent intent = new Intent(ProjectPageActivity.this, ImportProjectActivity.class);
 				startActivity(intent);
 			}
 		});
 
 		recordBtn.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				Intent intent = new Intent(ProjectPageActivity.this, RecordClipActivity.class);
 				intent.putExtra(PROJECT_PATH, project.getProjectPath());
 				startActivity(intent);
 			}
 		});
 
-		play.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				try {
-					playAudio(filePath);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
+		
 
 	}
 
@@ -179,9 +144,7 @@ public class ProjectPageActivity extends Activity {
 			in = new FileInputStream( file );
 			in.read( byteData );
 			in.close(); 
-
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// Set and push to audio track..
@@ -202,8 +165,6 @@ public class ProjectPageActivity extends Activity {
 			at.stop();
 			at.release();
 		}
-		else
-			Log.d("TCAudio", "audio track is not initialised ");
 	}
 
 	/**
@@ -238,19 +199,42 @@ public class ProjectPageActivity extends Activity {
 	 */
 	private void setupClips() {
 		ScrollView clipNames = (ScrollView) findViewById(R.id.clipName);
-		LinearLayout ll = new LinearLayout(this);
-		ll.setOrientation(LinearLayout.VERTICAL);
+		ScrollView playButtons = (ScrollView) findViewById(R.id.play_buttons);
+		LinearLayout clipLayout = new LinearLayout(this);
+		LinearLayout playButtonLayout = new LinearLayout(this);
+		clipLayout.setOrientation(LinearLayout.VERTICAL);
+		playButtonLayout.setOrientation(LinearLayout.VERTICAL);
 
 		if (!project.getClips().isEmpty()) {
 			int index = 0;
-			for (String filename : project.getClips()) {
-				TextView a = new TextView(this);
-				a.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-				a.setText(filename);
-				ll.addView(a, index++);
+			for (final String filepath : project.getClips()) {
+				Button clip = new Button(this);
+				Button playButton = new Button(this);
+				
+				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
+				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
+				
+				clip.setText(filepath.substring(filepath.indexOf("pcm")+3));
+				playButton.setText("Play");
+				
+				playButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						try {
+							playAudio(filepath);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				
+				clipLayout.addView(clip, index);
+				playButtonLayout.addView(playButton, index++);
 			}
 			clipNames.removeAllViews();
-			clipNames.addView(ll);
+			clipNames.addView(clipLayout);
+			playButtons.removeAllViews();
+			playButtons.addView(playButtonLayout);
 		}
 	}
 	

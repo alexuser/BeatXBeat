@@ -56,30 +56,37 @@
         android:layout_below="@+id/timer"
         android:layout_marginTop="38dp"
         android:orientation="vertical"
-        android:text="Recordings Go Here"
         android:textAppearance="?android:attr/textAppearanceMedium" >
 
         <TextView
-            android:id="@+id/clipName"
+            android:id="@+id/recording_filler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/timer"
-            android:layout_below="@+id/timer"
             android:layout_marginTop="38dp"
             android:orientation="vertical"
             android:text="Recordings Go Here"
             android:textAppearance="?android:attr/textAppearanceMedium" >
         </TextView>
     </ScrollView>
-
-    <Button
-        android:id="@+id/play"
+    
+    <ScrollView
+        android:id="@+id/play_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/clipName"
-        android:layout_alignBottom="@+id/clipName"
-        android:layout_alignRight="@+id/importClip"
-        android:text="Play" />
+        android:layout_below="@+id/timer"
+        android:layout_toRightOf="@id/clipName"
+        android:layout_marginTop="38dp"
+        android:orientation="vertical"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+<!--     <Button -->
+<!--         android:id="@+id/play" -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_alignBaseline="@+id/clipName" -->
+<!--         android:layout_alignBottom="@+id/clipName" -->
+<!--         android:layout_alignRight="@+id/importClip" -->
+<!--         android:text="Play" /> -->
 
     <Button
         android:id="@+id/transcribeBtn"
