@@ -26,7 +26,7 @@ public class HomePageActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(HomePageActivity.this, ProjectPageActivity.class);
-				intent.putExtra("filePath", "");
+				intent.putExtra(ProjectPageActivity.PROJECT_PATH, "");
 				startActivity(intent);
 			}
 		});
@@ -36,7 +36,8 @@ public class HomePageActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(HomePageActivity.this, ImportProjectActivity.class);
+				Intent intent = new Intent(HomePageActivity.this, ImportActivity.class);
+				intent.putExtra(ImportActivity.FILE_TYPE, ImportActivity.XML);
 				startActivity(intent);
 			}
 		});

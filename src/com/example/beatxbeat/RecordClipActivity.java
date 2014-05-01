@@ -18,6 +18,7 @@ import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -132,7 +133,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			}
 		});
 		
-		audioFilePath = getBaseContext().getExternalFilesDir(null) + "/state.pcm";
+		audioFilePath = this.getFilesDir().getPath() + "/";
+		//this.getExternalFilesDir(null).getPath() + "/";
 				//Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath()
 				//+ "/Beat X Beat/";
 		
@@ -303,6 +305,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				}
 				try {
 			        os.close();
+		            Log.d("RecordClipActivity", "Audio file written at path: " + filePath);
 			    } catch (IOException e) {
 			        e.printStackTrace();
 			    }

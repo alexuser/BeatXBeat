@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -14,17 +15,24 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-public class ImportProjectActivity extends Activity {
+public class ImportActivity extends Activity {
 
-	private static final String XML = "xml";
+	public static final String XML = "xml";
+	public static final String PCM = "pcm";
+	public static final String FILE_TYPE = "fileType";
+	
+	private String mFileType;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_import_project);
+		setContentView(R.layout.activity_import);
+		
+		mFileType = this.getIntent().getStringExtra(FILE_TYPE);
 		
 		setupSearchBar();
-		listFiles("");
+		listFiles("", mFileType);
 	}
 
 	@Override
@@ -34,7 +42,7 @@ public class ImportProjectActivity extends Activity {
 		return true;
 	}
 	
-	private void listFiles(CharSequence pName) {
+	private void listFiles(CharSequence pName, String fileType) {
 		ScrollView fileList = (ScrollView) findViewById(R.id.file_select_scrollview);
 		LinearLayout ll = new LinearLayout(this);
 		ll.setOrientation(LinearLayout.VERTICAL);
@@ -43,12 +51,13 @@ public class ImportProjectActivity extends Activity {
 		int numFiles = 0;
 		if (files != null) {
 			for (File file : files) {
+				Log.d("ImportActivity", "file found at path: " + file.getPath());
 				final String path = file.getAbsolutePath();
 				String filetype = path.substring(path.length()-3);
 				String filename = "";
-				if (filetype.equals(XML)) { //Project file (xml)
-					filename = path.substring(path.indexOf("_")+1);
-					if (pName.length() == 0 || filename.contains(pName)) {
+				if (filetype.equals(fileType)) { //Project file (xml)
+					filename = path.substring(path.indexOf("_")+1, path.length()-4);
+					if ((pName.length() == 0 || filename.contains(pName)) && filename.length() > 0) {
 						Button b = new Button(this);
 						b.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 						b.setText(filename);
@@ -59,7 +68,7 @@ public class ImportProjectActivity extends Activity {
 							@Override
 							public void onClick(View arg0) {
 								Intent intent;
-								intent = new Intent(ImportProjectActivity.this, ProjectPageActivity.class);
+								intent = new Intent(ImportActivity.this, ProjectPageActivity.class);
 								intent.putExtra(ProjectPageActivity.PROJECT_PATH, path);
 								startActivity(intent);
 							}
@@ -82,7 +91,7 @@ public class ImportProjectActivity extends Activity {
 			b.setOnClickListener(new View.OnClickListener() {
 
 				public void onClick(View v) {
-					Intent intent = new Intent(ImportProjectActivity.this, ProjectPageActivity.class);
+					Intent intent = new Intent(ImportActivity.this, ProjectPageActivity.class);
 					intent.putExtra(ProjectPageActivity.PROJECT_PATH, "");
 					startActivity(intent);
 				}
@@ -94,7 +103,15 @@ public class ImportProjectActivity extends Activity {
 	}
 
 	private void setupSearchBar() {
-		EditText searchBar = (EditText) findViewById(R.id.import_proj_search_bar);
+		EditText searchBar = (EditText) findViewById(R.id.import_search_bar);
+		String hint = "Search ";
+		if (mFileType.equals(XML)) {
+			hint = hint + "project ";
+		} else {
+			hint = hint + "clip ";
+		}
+		hint = hint + "name";
+		searchBar.setHint(hint);
 		searchBar.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -106,7 +123,7 @@ public class ImportProjectActivity extends Activity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				listFiles(s);
+				listFiles(s, mFileType);
 			}
 			
 		});
