@@ -2,15 +2,17 @@ package com.example.beatxbeat;
 
 import java.io.File;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 public class ImportProjectActivity extends Activity {
 
@@ -21,18 +23,18 @@ public class ImportProjectActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_import_project);
 		
-		listFiles();
+		setupSearchBar();
+		listFiles("");
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.file_select, menu);
+		getMenuInflater().inflate(R.menu.import_project, menu);
 		return true;
 	}
 	
-	
-	private void listFiles() {
+	private void listFiles(CharSequence pName) {
 		ScrollView fileList = (ScrollView) findViewById(R.id.file_select_scrollview);
 		LinearLayout ll = new LinearLayout(this);
 		ll.setOrientation(LinearLayout.VERTICAL);
@@ -46,22 +48,25 @@ public class ImportProjectActivity extends Activity {
 				String filename = "";
 				if (filetype.equals(XML)) { //Project file (xml)
 					filename = path.substring(path.indexOf("_")+1);
-					Button b = new Button(this);
-					b.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-					b.setText(filename);
-					b.setWidth(1000);
-					b.setHeight(8);
-					b.setOnClickListener (new View.OnClickListener() {
+					if (pName.length() == 0 || filename.contains(pName)) {
+						Button b = new Button(this);
+						b.setTextAppearance(this, android.R.style.TextAppearance_Medium);
+						b.setText(filename);
+						b.setWidth(1000);
+						b.setHeight(8);
+						b.setOnClickListener (new View.OnClickListener() {
 
-						@Override
-						public void onClick(View arg0) {
-							Intent intent;
-							intent = new Intent(ImportProjectActivity.this, ProjectPageActivity.class);
-							intent.putExtra(ProjectPageActivity.PROJECT_PATH, path);
-							startActivity(intent);
-						}
-					});
-					ll.addView(b, numFiles++);
+							@Override
+							public void onClick(View arg0) {
+								Intent intent;
+								intent = new Intent(ImportProjectActivity.this, ProjectPageActivity.class);
+								intent.putExtra(ProjectPageActivity.PROJECT_PATH, path);
+								startActivity(intent);
+							}
+						});
+						ll.addView(b, numFiles++);
+					}
+					
 					
 					// so far only implemented project selection. 
 					// to implement multiple selection for recorded clips, 
@@ -77,7 +82,6 @@ public class ImportProjectActivity extends Activity {
 			b.setOnClickListener(new View.OnClickListener() {
 
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
 					Intent intent = new Intent(ImportProjectActivity.this, ProjectPageActivity.class);
 					intent.putExtra(ProjectPageActivity.PROJECT_PATH, "");
 					startActivity(intent);
@@ -89,4 +93,22 @@ public class ImportProjectActivity extends Activity {
 		fileList.addView(ll);
 	}
 
+	private void setupSearchBar() {
+		EditText searchBar = (EditText) findViewById(R.id.import_proj_search_bar);
+		searchBar.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable s) {}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				listFiles(s);
+			}
+			
+		});
+	}
 }
