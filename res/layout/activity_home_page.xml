@@ -10,26 +10,26 @@
     tools:context=".HomePageActivity" >
 
     <Button
-        android:id="@+id/continueProjectBtn"
+        android:id="@+id/newProjectBtn"
         android:layout_width="250dp"
         android:layout_height="50dp"
-        android:layout_below="@+id/newProjectBtn"
+        android:layout_above="@+id/continueProjectBtn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="21dp"
         android:background="@drawable/button_border"
-        android:text="Continue on a Project"
+        android:text="Start a New Audio Project"
         android:textColor="#FFFFFF"
         android:visibility="visible" />
 
     <Button
-        android:id="@+id/newProjectBtn"
+        android:id="@+id/continueProjectBtn"
         android:layout_width="250dp"
         android:layout_height="50dp"
-        android:layout_alignLeft="@+id/continueProjectBtn"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="237dp"
-        android:text="Start a New Audio Project"
+        android:layout_alignLeft="@+id/newProjectBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="185dp"
         android:background="@drawable/button_border"
+        android:text="Continue on a Project"
         android:textColor="#FFFFFF"
         android:visibility="visible" />
 
