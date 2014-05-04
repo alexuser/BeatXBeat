@@ -25,7 +25,11 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -150,7 +154,11 @@ public class ProjectPageActivity extends Activity {
 			}
 		});
 
+		ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView().findViewById(android.R.id.content).getParent();
 		
+		for (int i = 0; i < viewGroup.getChildCount(); i++){
+			setupUI(viewGroup.getChildAt(i));
+		}
 
 	}
 
@@ -298,9 +306,41 @@ public class ProjectPageActivity extends Activity {
 			clipNames.addView(clipLayout);
 			playButtons.removeAllViews();
 			playButtons.addView(playButtonLayout);
+
 		}
 	}
 	
+	public void hideSoftKeyboard() {
+	    InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+	    inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+	}
+	
+	public void setupUI(View view) {
+
+	    //Set up touch listener for non-text box views to hide keyboard.
+	    if(!(view instanceof EditText)) {
+
+	        view.setOnTouchListener(new OnTouchListener() {
+	        	
+	            public boolean onTouch(View v, MotionEvent event) {
+	                hideSoftKeyboard();
+	                return false;
+	            }
+
+	        });
+	    }
+
+	    //If a layout container, iterate over children and seed recursion.
+	    if (view instanceof ViewGroup) {
+
+	        for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+
+	            View innerView = ((ViewGroup) view).getChildAt(i);
+
+	            setupUI(innerView);
+	        }
+	    }
+	}
 	
 
 }

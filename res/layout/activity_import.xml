@@ -8,6 +8,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ImportProjectActivity" >
 
+    <LinearLayout
+    android:focusable="true" android:focusableInTouchMode="true"
+    android:layout_width="0px" android:layout_height="0px"/>
+    
     <EditText
         android:id="@+id/import_search_bar"
         android:layout_width="wrap_content"
@@ -17,10 +21,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:drawableLeft="@drawable/searchicon"
-        android:ems="20" >
+        android:ems="20"
+        android:hint = "search term goes here" />
 
-        <requestFocus />
-    </EditText>
+       
 
     <ScrollView
         android:id="@+id/file_select_scrollview"
