@@ -9,9 +9,11 @@
     tools:context=".ImportProjectActivity" >
 
     <LinearLayout
-    android:focusable="true" android:focusableInTouchMode="true"
-    android:layout_width="0px" android:layout_height="0px"/>
-    
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
     <EditText
         android:id="@+id/import_search_bar"
         android:layout_width="wrap_content"
@@ -22,9 +24,7 @@
         android:layout_marginTop="16dp"
         android:drawableLeft="@drawable/searchicon"
         android:ems="20"
-        android:hint = "search term goes here" />
-
-       
+        android:hint="search term goes here" />
 
     <ScrollView
         android:id="@+id/file_select_scrollview"
@@ -32,7 +32,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/import_search_bar"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp" />
+
+    <ScrollView
+        android:id="@+id/delete_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/import_search_bar"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="@string/hello_world" />
+        android:layout_toRightOf="@id/file_select_scrollview" />
 
 </RelativeLayout>

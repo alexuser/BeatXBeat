@@ -3,7 +3,9 @@ package com.example.beatxbeat;
 import java.io.File;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -51,8 +53,11 @@ public class ImportActivity extends Activity {
 	
 	private void listFiles(CharSequence pName, String fileType) {
 		ScrollView fileList = (ScrollView) findViewById(R.id.file_select_scrollview);
+		ScrollView deleteButtons = (ScrollView) findViewById(R.id.delete_buttons);
+		LinearLayout deleteButtonLayout = new LinearLayout(this);
 		LinearLayout ll = new LinearLayout(this);
 		ll.setOrientation(LinearLayout.VERTICAL);
+		deleteButtonLayout.setOrientation(LinearLayout.VERTICAL);
 
 		File[] files = this.getFilesDir().listFiles();
 		int numFiles = 0;
@@ -62,15 +67,16 @@ public class ImportActivity extends Activity {
 				final String path = file.getAbsolutePath();
 				String filetype = path.substring(path.length()-3);
 				String filename = "";
-				if (filetype.equals(fileType)) { //Project file (xml)
+				if (filetype.equals(fileType)) {
 					filename = path.substring(path.indexOf("_")+1, path.length()-4);
 					if ((pName.length() == 0 || filename.contains(pName)) && filename.length() > 0) {
-						Button b = new Button(this);
-						b.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-						b.setText(filename);
-						b.setWidth(1000);
-						b.setHeight(8);
-						b.setOnClickListener (new View.OnClickListener() {
+						Button fileButton = new Button(this);
+						Button deleteButton = new Button(this);
+						fileButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
+						fileButton.setText(filename);
+						fileButton.setWidth(600);
+						fileButton.setHeight(8);
+						fileButton.setOnClickListener (new View.OnClickListener() {
 
 							@Override
 							public void onClick(View arg0) {
@@ -80,9 +86,18 @@ public class ImportActivity extends Activity {
 								startActivity(intent);
 							}
 						});
-						ll.addView(b, numFiles++);
+						
+						deleteButton.setBackgroundResource(R.drawable.ic_action_discard);
+						deleteButton.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								showAlertBeforeDelete(new File(path));
+							}
+						});
+												
+						ll.addView(fileButton, numFiles);
+						deleteButtonLayout.addView(deleteButton, numFiles++);
 					}
-					
 					
 					// so far only implemented project selection. 
 					// to implement multiple selection for recorded clips, 
@@ -103,10 +118,12 @@ public class ImportActivity extends Activity {
 					startActivity(intent);
 				}
 			});
-			ll.addView(b, numFiles++);
+			ll.addView(b, 0);
 		}
 		fileList.removeAllViews();
 		fileList.addView(ll);
+		deleteButtons.removeAllViews();
+		deleteButtons.addView(deleteButtonLayout);
 	}
 
 	private void setupSearchBar() {
@@ -142,7 +159,6 @@ public class ImportActivity extends Activity {
 
 	}
 
-
 	public void hideSoftKeyboard() {
 	    InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
 	    inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
@@ -173,6 +189,33 @@ public class ImportActivity extends Activity {
 	            setupUI(innerView);
 	        }
 	    }
+	}
+	
+	private void showAlertBeforeDelete(final File pFile) {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+		alert.setTitle("Delete Clip");
+		alert.setMessage("Warning: File delete cannot be undone! Do you want to continue?");
+
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		alert.setView(input);
+		
+		alert.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				pFile.delete();
+				listFiles("", mFileType);
+			}
+		});
+		
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			  public void onClick(DialogInterface dialog, int whichButton) {
+			    // Canceled.
+			  }
+			});
+		alert.show();
 	}
 	
 }

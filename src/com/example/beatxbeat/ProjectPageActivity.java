@@ -60,11 +60,11 @@ public class ProjectPageActivity extends Activity {
 		Bundle extras = this.getIntent().getExtras();
 
 		projectNameTextView = (TextView) findViewById(R.id.projectName);
-		
+
 		if (!extras.containsKey(PROJECT_PATH)) {
 			Log.e("ProjectPageActivity", "No project path found. How did you get to this page?");
 		}
-		
+
 		try {
 			if (extras.getString(PROJECT_PATH).length() > 0) {
 				Log.d("ProjectPageActivity", "Opening project file at path: " + extras.getString(PROJECT_PATH));
@@ -72,13 +72,13 @@ public class ProjectPageActivity extends Activity {
 				projectNameTextView.setText(project.getName());
 			} else {
 				showNamingAlert();
-//				while (projectName == null) {
-//					this.wait(1000);
-//				}
+				//				while (projectName == null) {
+				//					this.wait(1000);
+				//				}
 				project = new ProjectFile(this, null, projectName);
 				project.save();
 			}
-			
+
 			projectNameTextView.addTextChangedListener(new TextWatcher() {
 				@Override
 				public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -98,7 +98,7 @@ public class ProjectPageActivity extends Activity {
 			//all purpose exception catcher
 			e1.printStackTrace();
 		}
-		
+
 		/**
 		 * Try to transcribe the clips listed in the View, show alert dialog on failure
 		 */
@@ -113,27 +113,27 @@ public class ProjectPageActivity extends Activity {
 
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 							ProjectPageActivity.this);
-			 
-						// set title
-						alertDialogBuilder.setTitle("Error... :(");
-			 
-						// set dialog message
-						alertDialogBuilder
-							.setMessage("Something went wrong, make sure you have clips in your project to transcribe")
-							.setCancelable(false)
-							.setNeutralButton("Okay",new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,int id) {
-									//return to the project page
-								}
-							  });
-			 
-							// create alert dialog
-							AlertDialog alertDialog = alertDialogBuilder.create();
-			 
-							// show it
-							alertDialog.show();
+
+					// set title
+					alertDialogBuilder.setTitle("Error... :(");
+
+					// set dialog message
+					alertDialogBuilder
+					.setMessage("Something went wrong, make sure you have clips in your project to transcribe")
+					.setCancelable(false)
+					.setNeutralButton("Okay",new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,int id) {
+							//return to the project page
 						}
+					});
+
+					// create alert dialog
+					AlertDialog alertDialog = alertDialogBuilder.create();
+
+					// show it
+					alertDialog.show();
 				}
+			}
 		});
 
 		importBtn.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +155,7 @@ public class ProjectPageActivity extends Activity {
 		});
 
 		ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView().findViewById(android.R.id.content).getParent();
-		
+
 		for (int i = 0; i < viewGroup.getChildCount(); i++){
 			setupUI(viewGroup.getChildAt(i));
 		}
@@ -226,7 +226,7 @@ public class ProjectPageActivity extends Activity {
 
 		// Set an EditText view to get user input 
 		final EditText input = new EditText(this);
-		
+
 		Scanner scanner = null;
 		ArrayList<String> dict = new ArrayList<String>();
 		try {
@@ -239,10 +239,10 @@ public class ProjectPageActivity extends Activity {
 			e.printStackTrace();
 		}
 		while(scanner.hasNext()){
-		  dict.add(scanner.nextLine());
+			dict.add(scanner.nextLine());
 		}
 		Collections.shuffle(dict);
-		
+
 		input.setText(dict.get(0));
 		input.setSelection(input.getText().length());
 		namingAlert.setView(input);
@@ -257,7 +257,7 @@ public class ProjectPageActivity extends Activity {
 		});
 		namingAlert.show();
 	}
-	
+
 	/**
 	 * Sets up the ScrollView in the middle of the page, which should contain
 	 * all the clips associated with the current project. If the project does 
@@ -277,17 +277,17 @@ public class ProjectPageActivity extends Activity {
 			for (final String filepath : project.getClips()) {
 				Button clip = new Button(this);
 				Button playButton = new Button(this);
-				
+
 				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				String temp = filepath.substring(filepath.lastIndexOf("/")+1);
-				
-				Pattern pattern = Pattern.compile("\\S+[.]pcm(\\w+)[.]pcm");
+
+				Pattern pattern = Pattern.compile("(.+?)(\\.[^.]*$|$)");
 				Matcher matcher = pattern.matcher(temp);
 				matcher.find();
 				clip.setText(matcher.group(1));
 				playButton.setText("Play");
-				
+
 				playButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -298,7 +298,7 @@ public class ProjectPageActivity extends Activity {
 						}
 					}
 				});
-				
+
 				clipLayout.addView(clip, index);
 				playButtonLayout.addView(playButton, index++);
 			}
@@ -309,38 +309,37 @@ public class ProjectPageActivity extends Activity {
 
 		}
 	}
-	
+
 	public void hideSoftKeyboard() {
-	    InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-	    inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+		InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+		inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 	}
-	
+
 	public void setupUI(View view) {
 
-	    //Set up touch listener for non-text box views to hide keyboard.
-	    if(!(view instanceof EditText)) {
+		//Set up touch listener for non-text box views to hide keyboard.
+		if(!(view instanceof EditText)) {
 
-	        view.setOnTouchListener(new OnTouchListener() {
-	        	
-	            public boolean onTouch(View v, MotionEvent event) {
-	                hideSoftKeyboard();
-	                return false;
-	            }
+			view.setOnTouchListener(new OnTouchListener() {
 
-	        });
-	    }
+				public boolean onTouch(View v, MotionEvent event) {
+					hideSoftKeyboard();
+					return false;
+				}
 
-	    //If a layout container, iterate over children and seed recursion.
-	    if (view instanceof ViewGroup) {
+			});
+		}
 
-	        for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+		//If a layout container, iterate over children and seed recursion.
+		if (view instanceof ViewGroup) {
 
-	            View innerView = ((ViewGroup) view).getChildAt(i);
+			for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
 
-	            setupUI(innerView);
-	        }
-	    }
+				View innerView = ((ViewGroup) view).getChildAt(i);
+
+				setupUI(innerView);
+			}
+		}
 	}
-	
 
 }
