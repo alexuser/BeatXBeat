@@ -280,10 +280,10 @@ public class ProjectPageActivity extends Activity {
 
 				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-				String temp = filepath.substring(filepath.lastIndexOf("/")+1);
+				String filename = filepath.substring(filepath.lastIndexOf("/")+1);
 
-				Pattern pattern = Pattern.compile("(.+?)(\\.[^.]*$|$)");
-				Matcher matcher = pattern.matcher(temp);
+				Pattern pattern = Pattern.compile("\\S+[.]pcm(\\w+[.]pcm)");
+				Matcher matcher = pattern.matcher(filename);
 				matcher.find();
 				clip.setText(matcher.group(1));
 				playButton.setText("Play");
