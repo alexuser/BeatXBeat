@@ -95,13 +95,41 @@ public class ProjectPageActivity extends Activity {
 			e1.printStackTrace();
 		}
 		
+		/**
+		 * Try to transcribe the clips listed in the View, show alert dialog on failure
+		 */
 		transcribeBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(ProjectPageActivity.this, TranscribePageActivity.class);
-				intent.putExtra(PROJECT_PATH, project.getProjectPath());
-				startActivity(intent);
-			}
+				try {
+					intent.putExtra(PROJECT_PATH, project.getProjectPath());
+					startActivity(intent);
+				} catch (Exception e) {
+
+					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+							ProjectPageActivity.this);
+			 
+						// set title
+						alertDialogBuilder.setTitle("Error... :(");
+			 
+						// set dialog message
+						alertDialogBuilder
+							.setMessage("Something went wrong, make sure you have clips in your project to transcribe")
+							.setCancelable(false)
+							.setNeutralButton("Okay",new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,int id) {
+									//return to the project page
+								}
+							  });
+			 
+							// create alert dialog
+							AlertDialog alertDialog = alertDialogBuilder.create();
+			 
+							// show it
+							alertDialog.show();
+						}
+				}
 		});
 
 		importBtn.setOnClickListener(new View.OnClickListener() {
