@@ -9,7 +9,7 @@
     tools:context=".ImportProjectActivity" >
 
     <EditText
-        android:id="@+id/import_proj_search_bar"
+        android:id="@+id/import_search_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -17,8 +17,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:drawableLeft="@drawable/searchicon"
-        android:ems="20"
-        android:hint="Search clip name" >
+        android:ems="20" >
 
         <requestFocus />
     </EditText>
@@ -27,7 +26,7 @@
         android:id="@+id/file_select_scrollview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/import_proj_search_bar"
+        android:layout_below="@id/import_search_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="@string/hello_world" />

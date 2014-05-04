@@ -21,37 +21,42 @@ public final class R {
         public static final int activity_vertical_margin=0x7f040001;
     }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
-        public static final int playicon=0x7f020001;
-        public static final int record=0x7f020002;
-        public static final int recordicon=0x7f020003;
-        public static final int searchicon=0x7f020004;
-        public static final int stopicon=0x7f020005;
+        public static final int button_border=0x7f020000;
+        public static final int custom_btn_beige=0x7f020001;
+        public static final int custom_btn_haiti=0x7f020002;
+        public static final int homepage=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int playicon=0x7f020005;
+        public static final int record=0x7f020006;
+        public static final int recordicon=0x7f020007;
+        public static final int searchicon=0x7f020008;
+        public static final int stopicon=0x7f020009;
     }
     public static final class id {
-        public static final int CDC=0x7f080000;
-        public static final int action_settings=0x7f080012;
-        public static final int backButton=0x7f080010;
-        public static final int beatxbeat=0x7f080001;
-        public static final int chronometer=0x7f08000f;
+        public static final int action_settings=0x7f080013;
+        public static final int backButton=0x7f080011;
+        public static final int chronometer=0x7f080010;
         public static final int clipName=0x7f080009;
-        public static final int continueProjectBtn=0x7f080003;
-        public static final int editText1=0x7f080004;
+        public static final int continueProjectBtn=0x7f080000;
+        public static final int file_select_scrollview=0x7f080003;
         public static final int importClip=0x7f080005;
+        public static final int import_search_bar=0x7f080002;
         public static final int newClip=0x7f080006;
-        public static final int newProjectBtn=0x7f080002;
-        public static final int output=0x7f080011;
-        public static final int play=0x7f08000a;
-        public static final int playButton=0x7f08000e;
+        public static final int newProjectBtn=0x7f080001;
+        public static final int playButton=0x7f08000f;
+        public static final int play_buttons=0x7f08000b;
         public static final int projectName=0x7f080007;
-        public static final int startButton=0x7f08000d;
-        public static final int stopButton=0x7f08000c;
+        public static final int recording_filler=0x7f08000a;
+        public static final int rlayout=0x7f080004;
+        public static final int startButton=0x7f08000e;
+        public static final int stopButton=0x7f08000d;
         public static final int timer=0x7f080008;
-        public static final int transcribeBtn=0x7f08000b;
+        public static final int transcribeBtn=0x7f08000c;
+        public static final int webView1=0x7f080012;
     }
     public static final class layout {
         public static final int activity_home_page=0x7f030000;
-        public static final int activity_import_project=0x7f030001;
+        public static final int activity_import=0x7f030001;
         public static final int activity_project_page=0x7f030002;
         public static final int activity_record_clip=0x7f030003;
         public static final int activity_transcribe_page=0x7f030004;
@@ -99,5 +104,8 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f060001;
+        public static final int btnStyleBeige=0x7f060002;
+        public static final int btnStyleHaiti=0x7f060003;
+        public static final int btnStyleHaitiLarge=0x7f060004;
     }
 }

@@ -185,7 +185,7 @@ public class ProjectFile {
 			Element clip = (Element) listClips.item(i);
 			if (clip.hasAttribute(CLIP_ATTRIBUTE)) {
 				String clipPath = clip.getAttribute(CLIP_ATTRIBUTE);
-				String clipName = clipPath.substring(clipPath.indexOf("pcm")+3);
+				String clipName = clipPath.substring(clipPath.lastIndexOf("/"));
 				String clipResult = clip.getAttribute(CLIP_RESULT_ATTRIBUTE);
 				results.put(clipName, clipResult);
 			}

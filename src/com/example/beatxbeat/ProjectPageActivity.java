@@ -50,9 +50,14 @@ public class ProjectPageActivity extends Activity {
 		Bundle extras = this.getIntent().getExtras();
 
 		projectNameTextView = (TextView) findViewById(R.id.projectName);
-
+		
+		if (!extras.containsKey(PROJECT_PATH)) {
+			Log.e("ProjectPageActivity", "No project path found. How did you get to this page?");
+		}
+		
 		try {
-			if (extras.containsKey(PROJECT_PATH)) {
+			if (extras.getString(PROJECT_PATH).length() > 0) {
+				Log.d("ProjectPageActivity", "Opening project file at path: " + extras.getString(PROJECT_PATH));
 				project = new ProjectFile(this, new File(extras.getString(PROJECT_PATH)), null);
 				projectNameTextView.setText(project.getName());
 			} else {
@@ -96,7 +101,8 @@ public class ProjectPageActivity extends Activity {
 		importBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(ProjectPageActivity.this, ImportProjectActivity.class);
+				Intent intent = new Intent(ProjectPageActivity.this, ImportActivity.class);
+				intent.putExtra(ImportActivity.FILE_TYPE, ImportActivity.PCM);
 				startActivity(intent);
 			}
 		});
@@ -214,7 +220,7 @@ public class ProjectPageActivity extends Activity {
 				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				
-				clip.setText(filepath.substring(filepath.indexOf("pcm")+3));
+				clip.setText(filepath.substring(filepath.lastIndexOf("/")+1));
 				playButton.setText("Play");
 				
 				playButton.setOnClickListener(new View.OnClickListener() {
