@@ -89,7 +89,14 @@ public class TranscribePageActivity extends Activity {
 			Matcher matcher = pattern.matcher(clipName);
 			matcher.find();
 			tempBeats = tempBeats + "[V:" + index + "]" + results.get(clipName) + "\\n";
-			tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + matcher.group(1) + "\" \\n";
+			
+			try {
+				tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + matcher.group(1) + "\" \\n";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + clipName + "\" \\n";
+			}
 			index++;
 		}
 		

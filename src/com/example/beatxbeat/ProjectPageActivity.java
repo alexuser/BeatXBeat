@@ -285,7 +285,12 @@ public class ProjectPageActivity extends Activity {
 				Pattern pattern = Pattern.compile("\\S+[.]pcm(\\w+[.]pcm)");
 				Matcher matcher = pattern.matcher(filename);
 				matcher.find();
-				clip.setText(matcher.group(1));
+				try {
+					clip.setText(matcher.group(1));
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					clip.setText(filename);
+				}
 				playButton.setText("Play");
 
 				playButton.setOnClickListener(new View.OnClickListener() {
