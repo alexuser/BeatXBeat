@@ -30,7 +30,7 @@ import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
 
 public class RecordClipActivity extends Activity implements OnsetHandler{
 	
-	static final int SAMPLE_RATE = 32000;
+	static final int SAMPLE_RATE = 44100;
 	private Button startRecording;
 	private Button stopRecording;
 	private Button playRecording;
@@ -335,15 +335,22 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	private void displayBeatTime(){
 		StringBuilder stringBuilder = new StringBuilder();
 		double difference;
-		int rest;
+		int length;
+		int measurePosition = 0;
 		for (int i = 1; i < beatList.size(); i++){
 			difference = beatList.get(i) - beatList.get(i-1);
 			difference = Math.round(difference*4)/4d;
-			rest = (int)(difference / (double)0.25);
-			for (int j = 0; j < rest; j++){
-				stringBuilder.append(" -");
+			length = (int)(difference / (double)0.25);
+			stringBuilder.append("C");
+			measurePosition++;
+			while(length>4){
+				stringBuilder.append("z" + (4 - measurePosition));
+				length-=(4 - measurePosition);
+				measurePosition = 0 ;
+				stringBuilder.append("|");
 			}
-			stringBuilder.append(" 0");
+			stringBuilder.append("z"+length);
+			measurePosition+=length;
 			}
 		result = stringBuilder.toString();
 	}

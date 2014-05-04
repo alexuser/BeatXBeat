@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -15,16 +17,24 @@ public class TranscribePageActivity extends Activity {
 	
 	ProjectFile project;
 
+	private String title = "Sample Beat";
+	private String beats = "[V:one] CDC \\n"
+			+ "[V:two] CDC";
+	private String voices = "V:one clef=perc name = \"Samp1\"  \\n V:two clef = perc name = \"Samp2\" \\n";
+	private String abcString = "X:1 \\n"
+			+ "T: " + title + " \\n"
+			+ "Q:60\\n "
+			+ "L:1/4\\n"
+			+ voices
+			+ beats;
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_transcribe_page);
 		Bundle extras = this.getIntent().getExtras();
 		
-		// File that user recorded and the path
-//		String result = extras.getString("result");
-//		TextView output = (TextView) findViewById(R.id.output);
-//		output.setText(result);
 		
 		try {
 			project = new ProjectFile(this, new File(extras.getString(ProjectPageActivity.PROJECT_PATH)), null);
@@ -34,7 +44,25 @@ public class TranscribePageActivity extends Activity {
 			e.printStackTrace();
 		}
 		
-		createTranscript();
+		final WebView webView = (WebView)findViewById(R.id.webView1);
+		webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient() 
+        {
+        	public void onPageFinished(WebView view, String url)
+            {
+        		generateTranscript();
+        		
+                webView.loadUrl("javascript:ABCJS.renderAbc(\"canvas\","
+                		+ "' " + abcString +  " ', "
+                		+ "{},"
+                		+ " {'editable': false, 'staffwidth': 400, 'scale': 0.7 },"
+                		+ " {});");
+            }
+        }
+            );
+		
+		webView.loadUrl("file:///android_asset/www/index.html");
+		
 		
 	}
 
@@ -45,19 +73,38 @@ public class TranscribePageActivity extends Activity {
 		return true;
 	}
 	
-	private void createTranscript() {
+	
+	/**
+	 * Generates the appropriate string to pass to the ABCJS rendering engine from project Clips
+	 * Precondition: class variables title, beats, voices, abcString exist
+	 * Postcondition: abcString is generated
+	 */
+	private void generateTranscript() {
 		HashMap<String, String> results = project.getClipResults();
-		ScrollView sv = (ScrollView) findViewById(R.id.output);
-		LinearLayout ll = new LinearLayout(this);
-		ll.setOrientation(LinearLayout.VERTICAL);
+
 		int index = 0;
+		String tempBeats ="";
+		String tempVoices = "";
 		for (String clipName : results.keySet()) {
-			TextView result = new TextView(this);
-			result.setText(clipName + ": " + results.get(clipName));
-			ll.addView(result, index++);
+
+			tempBeats = tempBeats + "[V:" + index + "]" + results.get(clipName) + "\\n";
+			tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + clipName + "\" \\n";
+			index++;
 		}
-		sv.removeAllViews();
-		sv.addView(ll);
+		
+		if(index>0){
+			tempBeats = tempBeats.substring(0,tempBeats.length()-3);
+		}
+		title = project.getName();
+		beats = tempBeats;
+		voices = tempVoices;
+		abcString = "X:1 \\n"
+				+ "T: " + title + " \\n"
+				+ "Q:60\\n "
+				+ "L:1/4\\n"
+				+ voices
+				+ beats;
+
 	}
 
 }
