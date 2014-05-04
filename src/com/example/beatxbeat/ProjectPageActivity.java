@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +15,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -186,6 +190,25 @@ public class ProjectPageActivity extends Activity {
 
 		// Set an EditText view to get user input 
 		final EditText input = new EditText(this);
+		
+		Scanner scanner = null;
+		ArrayList<String> dict = new ArrayList<String>();
+		try {
+			scanner = new Scanner(getAssets().open("dictionary/dict.txt"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		while(scanner.hasNext()){
+		  dict.add(scanner.nextLine());
+		}
+		Collections.shuffle(dict);
+		
+		input.setText(dict.get(0));
+		input.setSelection(input.getText().length());
 		namingAlert.setView(input);
 
 		namingAlert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
