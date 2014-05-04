@@ -10,12 +10,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -27,8 +25,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,8 +48,8 @@ public class ProjectPageActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_project_page);
 
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		//ActionBar actionBar = getActionBar();
+		//actionBar.setDisplayHomeAsUpEnabled(true);
 
 		recordBtn = (Button) findViewById(R.id.newClip);
 		importBtn = (Button) findViewById(R.id.importClip);
@@ -288,13 +286,11 @@ public class ProjectPageActivity extends Activity {
 				try {
 					clip.setText(matcher.group(1));
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					pattern = Pattern.compile("\\/(\\S*.pcm)");
 					matcher = pattern.matcher(filename);
 					try {
 						clip.setText(matcher.group(1));
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 						clip.setText(filename);
 					}

@@ -331,7 +331,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 
 	@Override
 	public void handleOnset(double time, double salience) {
-		//final String s = "Clap at " + String.valueOf(time) + " seconds";
 		beatList.add(time);
 	}
 	
@@ -342,20 +341,22 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		int measurePosition = 0;
 		for (int i = 1; i < beatList.size(); i++){
 			difference = beatList.get(i) - beatList.get(i-1);
-			difference = Math.round(difference*4)/4d;
-			length = (int)(difference / (double)0.25);
+			length = (int) (difference * 4);
 			stringBuilder.append("C");
 			measurePosition++;
-			while(length>4){
+			if(measurePosition==4){
+				stringBuilder.append("|");
+			}
+			while(length>=4){
 				stringBuilder.append("z" + (4 - measurePosition));
 				length-=(4 - measurePosition);
-				measurePosition = 0 ;
+				measurePosition = 0;
 				stringBuilder.append("|");
 			}
 			stringBuilder.append("z"+length);
 			measurePosition+=length;
-			}
+		stringBuilder.append("C");
 		result = stringBuilder.toString();
+		}
 	}
-
 }

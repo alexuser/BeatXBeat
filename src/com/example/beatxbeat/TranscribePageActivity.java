@@ -95,13 +95,11 @@ public class TranscribePageActivity extends Activity {
 			try {
 				tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + matcher.group(1) + "\" \\n";
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				pattern = Pattern.compile("\\/(\\S*.pcm)");
 				matcher = pattern.matcher(clipName);
 				try {
 					tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + matcher.group(1) + "\" \\n";
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + clipName + "\" \\n";
 				}
