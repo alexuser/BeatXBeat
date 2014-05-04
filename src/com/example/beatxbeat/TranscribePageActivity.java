@@ -2,6 +2,8 @@ package com.example.beatxbeat;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,9 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 public class TranscribePageActivity extends Activity {
 	
@@ -86,9 +85,11 @@ public class TranscribePageActivity extends Activity {
 		String tempBeats ="";
 		String tempVoices = "";
 		for (String clipName : results.keySet()) {
-
+			Pattern pattern = Pattern.compile("\\S+[.]pcm(\\w+)[.]pcm");
+			Matcher matcher = pattern.matcher(clipName);
+			matcher.find();
 			tempBeats = tempBeats + "[V:" + index + "]" + results.get(clipName) + "\\n";
-			tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + clipName + "\" \\n";
+			tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + matcher.group(1) + "\" \\n";
 			index++;
 		}
 		

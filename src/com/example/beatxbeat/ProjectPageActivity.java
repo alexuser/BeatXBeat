@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -219,8 +221,12 @@ public class ProjectPageActivity extends Activity {
 				
 				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
+				String temp = filepath.substring(filepath.lastIndexOf("/")+1);
 				
-				clip.setText(filepath.substring(filepath.lastIndexOf("/")+1));
+				Pattern pattern = Pattern.compile("\\S+[.]pcm(\\w+)[.]pcm");
+				Matcher matcher = pattern.matcher(temp);
+				matcher.find();
+				clip.setText(matcher.group(1));
 				playButton.setText("Play");
 				
 				playButton.setOnClickListener(new View.OnClickListener() {
