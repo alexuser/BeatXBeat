@@ -84,9 +84,11 @@ public class TranscribePageActivity extends Activity {
 		int index = 0;
 		String tempBeats ="";
 		String tempVoices = "";
+		Pattern pattern;
+		Matcher matcher;
 		for (String clipName : results.keySet()) {
-			Pattern pattern = Pattern.compile("\\S+[.]pcm(\\w+)[.]pcm");
-			Matcher matcher = pattern.matcher(clipName);
+			pattern = Pattern.compile("\\S+[.]pcm(\\w+)[.]pcm");
+			matcher = pattern.matcher(clipName);
 			matcher.find();
 			tempBeats = tempBeats + "[V:" + index + "]" + results.get(clipName) + "\\n";
 			
@@ -94,8 +96,15 @@ public class TranscribePageActivity extends Activity {
 				tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + matcher.group(1) + "\" \\n";
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-				tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + clipName + "\" \\n";
+				pattern = Pattern.compile("\\/(\\S*.pcm)");
+				matcher = pattern.matcher(clipName);
+				try {
+					tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + matcher.group(1) + "\" \\n";
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + clipName + "\" \\n";
+				}
 			}
 			index++;
 		}

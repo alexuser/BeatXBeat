@@ -289,7 +289,15 @@ public class ProjectPageActivity extends Activity {
 					clip.setText(matcher.group(1));
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
-					clip.setText(filename);
+					pattern = Pattern.compile("\\/(\\S*.pcm)");
+					matcher = pattern.matcher(filename);
+					try {
+						clip.setText(matcher.group(1));
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						clip.setText(filename);
+					}
 				}
 				playButton.setText("Play");
 
