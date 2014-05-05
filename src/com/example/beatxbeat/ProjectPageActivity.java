@@ -206,11 +206,11 @@ public class ProjectPageActivity extends Activity {
 		}
 		// Set and push to audio track..
 		int intSize = android.media.AudioTrack.getMinBufferSize(
-				32000, 
+				44100, 
 				AudioFormat.CHANNEL_OUT_MONO,
 				AudioFormat.ENCODING_PCM_16BIT); 
 		AudioTrack at = new AudioTrack(AudioManager.STREAM_MUSIC, 
-				32000, 
+				44100, 
 				AudioFormat.CHANNEL_OUT_MONO,
 				AudioFormat.ENCODING_PCM_16BIT, 
 				intSize, 

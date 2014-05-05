@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.TextView;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.onsets.OnsetHandler;
 import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
@@ -100,10 +101,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				if (isRecording){
 					isRecording = false;
 					showAlertRecordNaming();
-					setupReadytoRecordUI();
-					File clip = new File(filePath);
-					result = generateBeatTime();
-					project.addClip(clip, result);
 				} else {
 					startRecording.setEnabled(false);
 					resetRecorder();
@@ -266,6 +263,10 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				} else {
 					fileName = randomName;
 				}
+				setupReadytoRecordUI();
+				File clip = new File(filePath);
+				result = generateBeatTime();
+				project.addClip(clip, result);
 			}
 		});
 		
