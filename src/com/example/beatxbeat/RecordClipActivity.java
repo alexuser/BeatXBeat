@@ -78,12 +78,15 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			e1.printStackTrace();
 		}
 		
+		/**
+		 * Hide "start recording" button
+		 * Enable "stop recording" button
+		 * Setup recording and beat detection
+		 */
 		startRecording.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
-				startRecording.setEnabled(false);
-				stopRecording.setEnabled(true);
 				listen();
 			}
 		});
@@ -95,16 +98,15 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				stopRecording.setEnabled(false);
 				playRecording.setEnabled(true);
 				if (isRecording){
-					startRecording.setEnabled(true);
 					isRecording = false;
-					showAlertBeforeRecord();
-					displayBeatTime();
-					resetRecording();
+					showAlertRecordNaming();
+					setupReadytoRecordUI();
 					File clip = new File(filePath);
+					result = generateBeatTime();
 					project.addClip(clip, result);
 				} else {
 					startRecording.setEnabled(false);
-					stop();
+					resetRecorder();
 				}
 				beatList = new ArrayList<Double>();
 			}
@@ -139,9 +141,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		});
 		
 		audioFilePath = this.getFilesDir().getPath() + "/";
-		//this.getExternalFilesDir(null).getPath() + "/";
-				//Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath()
-				//+ "/Beat X Beat/";
+
 		
 		// STEP 1: set up recorder... same as in loopback example
 		int minBufferSize = AudioRecord.getMinBufferSize(
@@ -158,7 +158,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		// END STEP 1
 				
 		// STEP 2: create percussion detector
-		mPercussionOnsetDetector = new PercussionOnsetDetector(SAMPLE_RATE, minBufferSize/2, this, 60, 10);
+		mPercussionOnsetDetector = new PercussionOnsetDetector(SAMPLE_RATE, minBufferSize/2, this, 80, 10);
 		// END STEP 2
 		
 	}
@@ -171,24 +171,23 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	}
 	
 	
-	private void setupRecording() {
-		isRecording = true;
+	/**
+	 * Set UI elements for recording mode
+	 * 
+	 */
+	private void setupRecordingUI() {
 		stopRecording.setEnabled(true);
 		playRecording.setEnabled(false);
 		startRecording.setEnabled(false);
-//		miclogo = (ImageView) findViewById(R.id.imageView1);
-//		miclogo.setVisibility(View.GONE);
 		chrono.setBase(SystemClock.elapsedRealtime());
 		chrono.setVisibility(View.VISIBLE);
 		chrono.start();
 	}
 
-	private void resetRecording() {
-	    // stops the recording activity
+	private void setupReadytoRecordUI() {
 		stopRecording.setEnabled(false);
 		playRecording.setEnabled(true);
-//		ImageView miclogo = (ImageView) findViewById(R.id.imageView1);
-//		miclogo.setVisibility(View.VISIBLE);
+		startRecording.setEnabled(false);
 		chrono.setVisibility(View.INVISIBLE);
 		chrono.stop();
 		chrono.setBase(SystemClock.elapsedRealtime());
@@ -199,8 +198,10 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		playRecording.setEnabled(false);
 		startRecording.setEnabled(false);
 		stopRecording.setEnabled(true);
-		if (filePath==null)
+		if (filePath==null){
+			Log.d("plaback", "file not found for playback in RecordClipActivity");
 			return;
+		}
 
 		//Reading the file..
 		byte[] byteData = null; 
@@ -237,7 +238,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 //			Log.d("TCAudio", "audio track is not initialised ");
 	}
 	
-	public void showAlertBeforeRecord()
+	public void showAlertRecordNaming()
 	{
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -276,13 +277,16 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		alert.show();
 	}
 	
+	/**
+	 * Call method to setup UI state
+	 * Start recording on new thread
+	 */
 	public void listen() {
-		setupRecording();
+		setupRecordingUI();
 		recorder.startRecording();
 		randomName = getRandomName() + ".pcm";
 		filePath = audioFilePath+randomName;
 		isRecording = true;
-		
 		tarsosFormat = new be.hogent.tarsos.dsp.AudioFormat(
 						(float)SAMPLE_RATE, // sample rate
 						16, // bit depth
@@ -330,7 +334,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		listeningThread.start();
 	}
 	
-	private void stop(){
+	private void resetRecorder(){
 		if (null != recorder) {
 	        isRecording = false;
 
@@ -340,7 +344,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	        recorder = null;
 	        listeningThread = null;
 	    }
-		resetRecording();
+		setupReadytoRecordUI();
 	}
 
 	@Override
@@ -348,7 +352,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		beatList.add(time);
 	}
 	
-	private void displayBeatTime(){
+	private String generateBeatTime(){
 		StringBuilder stringBuilder = new StringBuilder();
 		double difference;
 		int length;
@@ -372,7 +376,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			measurePosition+=length;
 		}
 		stringBuilder.append("C");
-		result = stringBuilder.toString();
+		return stringBuilder.toString();
 	}
 	
 	private String getRandomName() {
