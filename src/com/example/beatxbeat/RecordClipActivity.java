@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,11 +39,13 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	private Button playRecording;
 	private Button backbtn;
 	private boolean isRecording = false;
+	private File clip1;
 	
 	private static String audioFilePath;
 	private static String fileName="";
 	private static String filePath="";
 	private static String result = "";
+	private String randomName = "";
 	private Chronometer chrono;
 	//private ImageView miclogo;
 	
@@ -78,9 +82,9 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			
 			@Override
 			public void onClick(View arg0) {
-				showAlertBeforeRecord();
 				startRecording.setEnabled(false);
 				stopRecording.setEnabled(true);
+				listen();
 			}
 		});
 		
@@ -93,6 +97,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				if (isRecording){
 					startRecording.setEnabled(true);
 					isRecording = false;
+					showAlertBeforeRecord();
 					displayBeatTime();
 					resetRecording();
 					File clip = new File(filePath);
@@ -241,18 +246,25 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 
 		// Set an EditText view to get user input 
 		final EditText input = new EditText(this);
+		input.setText(randomName);
+		input.setSelection(input.getText().length());
 		alert.setView(input);
 		
 		alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				fileName = input.getText().toString();
-				if (!fileName.endsWith(".pcm")){
-					fileName = fileName + ".pcm";
+				if (input.getText().toString() != randomName) {
+					fileName = input.getText().toString();
+					if (!fileName.endsWith(".pcm")){
+						fileName = fileName + ".pcm";
+					}
+					filePath = audioFilePath+fileName;
+					File f = new File(filePath);
+					clip1.renameTo(f);
+				} else {
+					fileName = randomName;
 				}
-				filePath = audioFilePath+fileName;
-				listen();
 			}
 		});
 		
@@ -267,6 +279,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	public void listen() {
 		setupRecording();
 		recorder.startRecording();
+		randomName = getRandomName() + ".pcm";
+		filePath = audioFilePath+randomName;
 		isRecording = true;
 		
 		tarsosFormat = new be.hogent.tarsos.dsp.AudioFormat(
@@ -282,9 +296,9 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			@Override
 			public void run() {
 				FileOutputStream os = null;
-				File f = new File(filePath);
+				clip1 = new File(filePath);
 			    try {
-			    	 os = new FileOutputStream(f);
+			    	 os = new FileOutputStream(clip1);
 			    } catch (FileNotFoundException e) {
 			        e.printStackTrace();
 			    }
@@ -359,5 +373,24 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		stringBuilder.append("C");
 		result = stringBuilder.toString();
 		}
+	}
+	
+	private String getRandomName() {
+		Scanner scanner = null;
+		ArrayList<String> dict = new ArrayList<String>();
+		try {
+			scanner = new Scanner(getAssets().open("dictionary/dict.txt"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		while(scanner.hasNext()){
+			dict.add(scanner.nextLine());
+		}
+		Collections.shuffle(dict);
+		return dict.get(0);
 	}
 }
