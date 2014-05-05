@@ -152,6 +152,8 @@ public class ProjectPageActivity extends Activity {
 			}
 		});
 
+		
+		//Setup the method to allow the keyboard to be hidden when clicking elswhere on screen
 		ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView().findViewById(android.R.id.content).getParent();
 
 		for (int i = 0; i < viewGroup.getChildCount(); i++){
@@ -215,6 +217,7 @@ public class ProjectPageActivity extends Activity {
 
 	/**
 	 * Prompts the user to name the project when starting a new project.
+	 * Generates a preset name for convenience
 	 */
 	public void showNamingAlert() {
 		AlertDialog.Builder namingAlert = new AlertDialog.Builder(this);

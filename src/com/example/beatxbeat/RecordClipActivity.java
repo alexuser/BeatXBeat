@@ -346,6 +346,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			measurePosition++;
 			if(measurePosition==4){
 				stringBuilder.append("|");
+				measurePosition = 0;
 			}
 			while(length>=4){
 				stringBuilder.append("z" + (4 - measurePosition));
