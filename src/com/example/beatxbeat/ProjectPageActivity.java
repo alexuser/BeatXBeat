@@ -42,6 +42,7 @@ public class ProjectPageActivity extends Activity {
 
 	private ProjectFile project;
 	public final static String PROJECT_PATH = "com.example.beatxbeat.PROJECT_PATH";
+	public final static String IMPORT_CLIP_PATH = "com.example.beatxbeat.IMPORT_CLIP_PATH";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +69,17 @@ public class ProjectPageActivity extends Activity {
 				Log.d("ProjectPageActivity", "Opening project file at path: " + extras.getString(PROJECT_PATH));
 				project = new ProjectFile(this, new File(extras.getString(PROJECT_PATH)), null);
 				projectNameTextView.setText(project.getName());
+				//TODO need to figure out how to calculate result string for beat
+				project.addClip(new File(extras.getString(IMPORT_CLIP_PATH)), null);
+				
 			} else {
 				showNamingAlert();
 				//				while (projectName == null) {
 				//					this.wait(1000);
 				//				}
 				project = new ProjectFile(this, null, projectName);
-				project.save();
 			}
-
+			project.save();
 			projectNameTextView.addTextChangedListener(new TextWatcher() {
 				@Override
 				public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -139,6 +142,7 @@ public class ProjectPageActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(ProjectPageActivity.this, ImportActivity.class);
 				intent.putExtra(ImportActivity.FILE_TYPE, ImportActivity.PCM);
+				intent.putExtra(PROJECT_PATH, project.getProjectPath());
 				startActivity(intent);
 			}
 		});
