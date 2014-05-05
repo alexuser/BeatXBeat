@@ -97,6 +97,7 @@ public class TranscribePageActivity extends Activity {
 			} catch (Exception e) {
 				pattern = Pattern.compile("\\/(\\S*.pcm)");
 				matcher = pattern.matcher(clipName);
+				matcher.find();
 				try {
 					tempVoices = tempVoices + "V:" + index + " clef=perc name = \"" + matcher.group(1) + "\" \\n";
 				} catch (Exception e1) {
