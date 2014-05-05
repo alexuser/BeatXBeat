@@ -12,15 +12,6 @@
     <LinearLayout
     android:focusable="true" android:focusableInTouchMode="true"
     android:layout_width="0px" android:layout_height="0px"/>
-    
-    <Button
-        android:id="@+id/importClip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/newClip"
-        android:layout_alignBottom="@+id/newClip"
-        android:layout_toRightOf="@+id/newClip"
-        android:text="Import Clip" />
 
     <EditText
         android:id="@+id/projectName"
@@ -30,27 +21,8 @@
         android:layout_marginRight="14dp"
         android:layout_marginTop="14dp"
         android:ems="10"
-        android:hint="Project Name" >
-    </EditText>
-
-    <Button
-        android:id="@+id/newClip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/timer"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="42dp"
-        android:text="Record New Clip" />
-
-    <TextView
-        android:id="@+id/timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/projectName"
-        android:layout_below="@+id/projectName"
-        android:layout_marginTop="21dp"
-        android:text="My Clips"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:background="@null"
+        android:hint="Project Name" />
 
     <ScrollView
         android:id="@+id/clipName"
@@ -100,6 +72,40 @@
         android:layout_alignBaseline="@+id/projectName"
         android:layout_alignBottom="@+id/projectName"
         android:layout_alignParentRight="true"
+        android:background="@drawable/button_red"
         android:text="Transcribe" />
+
+    <Button
+        android:id="@+id/newClip"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_alignLeft="@+id/clipName"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="26dp"
+        android:background="@drawable/button_border"
+        android:text="Record New Clip"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/importClip"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_alignBaseline="@+id/newClip"
+        android:layout_alignBottom="@+id/newClip"
+        android:layout_alignRight="@+id/transcribeBtn"
+        android:layout_toRightOf="@+id/projectName"
+        android:background="@drawable/button_border"
+        android:text="Import Clip"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/projectName"
+        android:layout_below="@+id/transcribeBtn"
+        android:layout_marginTop="33dp"
+        android:text="My Clips"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
