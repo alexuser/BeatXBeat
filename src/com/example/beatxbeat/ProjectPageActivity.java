@@ -294,6 +294,14 @@ public class ProjectPageActivity extends Activity {
 						e.printStackTrace();
 						clip.setText(filename);
 					}
+					clip.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(ProjectPageActivity.this, EditClipActivity.class);
+							intent.putExtra("filepath", filepath);
+							startActivity(intent);
+						}
+					});
 				}
 				playButton.setText("Play");
 

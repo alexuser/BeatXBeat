@@ -8,5 +8,6 @@
     <string name="title_activity_import_project">ImportProjectActivity</string>
     <string name="title_activity_transcribe_page">TranscribePageActivity</string>
     <string name="title_activity_record_clip">RecordClipActivity</string>
+    <string name="title_activity_edit_clip">EditClipActivity</string>
 
 </resources>
