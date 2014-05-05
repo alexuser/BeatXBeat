@@ -7,7 +7,7 @@ public class WavAudioFormat extends PcmAudioFormat {
      */
     protected final boolean bigEndian = false;
 
-    private WavAudioFormat(int sampleRate, int sampleSizeInBits, int channels, boolean signed) {
+    public WavAudioFormat(int sampleRate, int sampleSizeInBits, int channels, boolean signed) {
         super(sampleRate, sampleSizeInBits, channels, false, signed);
     }
 

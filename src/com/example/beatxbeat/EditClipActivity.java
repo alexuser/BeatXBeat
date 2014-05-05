@@ -7,9 +7,11 @@ import java.io.IOException;
 
 import com.musicg.graphic.GraphicRender;
 import com.musicg.wave.Wave;
+import com.musicg.wave.WaveFileManager;
 import com.musicg.wave.WaveHeader;
 
 import simplesound.pcm.PcmAudioHelper;
+import simplesound.pcm.WavAudioFormat;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,37 +38,46 @@ public class EditClipActivity extends Activity {
 		
 		//Convert pcm to wav
 		File pcm = new File(filepath);
-		byte[] data = new byte[(int) pcm.length()];
-		FileInputStream fileInputStream;
-		try {
-			fileInputStream = new FileInputStream(pcm);
-			fileInputStream.read(data);
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		System.out.println(pcm);
+//		byte[] data = new byte[(int) pcm.length()];
+//		FileInputStream fileInputStream;
+//		try {
+//			fileInputStream = new FileInputStream(pcm);
+//			fileInputStream.read(data);
+//		} catch (FileNotFoundException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		File wav = null;
 		try {
-			PcmAudioHelper.convertRawToWav(null, pcm, wav);
+			PcmAudioHelper.convertRawToWav(new WavAudioFormat(44100, 16, 1, true), pcm, wav);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println(wav);
 		
 		//Draw waveform 
-		Wave wave = new Wave(new WaveHeader(), data);
-		GraphicRender render=new GraphicRender();
-		render.setHorizontalMarker(1);
-		render.setVerticalMarker(1);
-		String jpgPath = this.getExternalFilesDir(null).getPath() + "/waveform.jpg";
-		render.renderWaveform(wave, jpgPath);
-		ImageView waveform = (ImageView) findViewById(R.id.waveform);
-		File jpg = new File(jpgPath);
-		Bitmap myBitmap = BitmapFactory.decodeFile(jpg.getAbsolutePath());
-	    waveform.setImageBitmap(myBitmap);
+		Wave wave = new Wave();
+		System.out.println(wave);
+		wave.leftTrim(1);
+		wave.rightTrim(0.5F);
+		System.out.println(wave);
+		WaveFileManager waveFileManager=new WaveFileManager(wave);
+		String wavPath = this.getExternalFilesDir(null).getPath() + "/waveform.wav";
+		waveFileManager.saveWaveAsFile(wavPath);
+//		GraphicRender render=new GraphicRender();
+//		render.setHorizontalMarker(1);
+//		render.setVerticalMarker(1);
+//		String jpgPath = this.getExternalFilesDir(null).getPath() + "/waveform.jpg";
+//		render.renderWaveform(wave, jpgPath);
+//		ImageView waveform = (ImageView) findViewById(R.id.waveform);
+//		File jpg = new File(jpgPath);
+//		Bitmap myBitmap = BitmapFactory.decodeFile(jpg.getAbsolutePath());
+//	    waveform.setImageBitmap(myBitmap);
 	}
 
 	@Override
