@@ -70,8 +70,13 @@ public class ProjectPageActivity extends Activity {
 				project = new ProjectFile(this, new File(extras.getString(PROJECT_PATH)), null);
 				projectNameTextView.setText(project.getName());
 				//TODO need to figure out how to calculate result string for beat
-				project.addClip(new File(extras.getString(IMPORT_CLIP_PATH)), null);
-				
+
+
+				if (extras.containsKey(IMPORT_CLIP_PATH)) {
+					File importedClip = new File(extras.getString(IMPORT_CLIP_PATH));
+					BeatTranscriber ct = new BeatTranscriber(importedClip);
+					project.addClip(importedClip, ct.getResults());
+				}				
 			} else {
 				showNamingAlert();
 				//				while (projectName == null) {
