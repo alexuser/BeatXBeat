@@ -87,7 +87,7 @@ public class TranscribePageActivity extends Activity {
 		Pattern pattern;
 		Matcher matcher;
 		for (String clipName : results.keySet()) {
-			pattern = Pattern.compile("\\S+[.]pcm(\\w+)[.]pcm");
+			pattern = Pattern.compile("(\\w+)[.]pcm");
 			matcher = pattern.matcher(clipName);
 			matcher.find();
 			tempBeats = tempBeats + "[V:" + index + "]" + results.get(clipName) + "\\n";

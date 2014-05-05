@@ -33,7 +33,7 @@ import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
 
 public class RecordClipActivity extends Activity implements OnsetHandler{
 	
-	static final int SAMPLE_RATE = 44100;
+	static final int SAMPLE_RATE = 32000;
 	private Button startRecording;
 	private Button stopRecording;
 	private Button playRecording;
@@ -370,9 +370,9 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			}
 			stringBuilder.append("z"+length);
 			measurePosition+=length;
+		}
 		stringBuilder.append("C");
 		result = stringBuilder.toString();
-		}
 	}
 	
 	private String getRandomName() {
@@ -390,6 +390,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		while(scanner.hasNext()){
 			dict.add(scanner.nextLine());
 		}
+		scanner.close();
 		Collections.shuffle(dict);
 		return dict.get(0);
 	}
