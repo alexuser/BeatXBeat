@@ -66,4 +66,13 @@
         android:text="Start Recording"
         android:textColor="#FFFFFF" />
 
+    <TextView
+        android:id="@+id/beatDetector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chronometer"
+        android:layout_centerHorizontal="true"
+        android:text="ii"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
 </RelativeLayout>

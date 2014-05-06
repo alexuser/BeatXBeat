@@ -19,6 +19,7 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
@@ -100,6 +101,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				playRecording.setEnabled(true);
 				if (isRecording){
 					isRecording = false;
+					resetRecorder();
 					showAlertRecordNaming();
 				} else {
 					startRecording.setEnabled(false);
@@ -351,6 +353,21 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	@Override
 	public void handleOnset(double time, double salience) {
 		beatList.add(time);
+		final TextView beatDetector = (TextView) findViewById(R.id.beatDetector);
+		runOnUiThread(new Runnable() {
+			  public void run() {
+				  new CountDownTimer(500, 250) {
+
+			     	     public void onTick(long millisUntilFinished) {
+			     	    	 beatDetector.setText("Beat!");
+			     	     }
+
+			     	     public void onFinish() {
+			     	    	 beatDetector.setText("");
+			     	     }
+					}.start();
+			  }
+			});
 	}
 	
 	private String generateBeatTime(){
