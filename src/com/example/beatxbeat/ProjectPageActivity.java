@@ -81,15 +81,8 @@ public class ProjectPageActivity extends Activity {
 					textPath = textPath.substring(0, textPath.length()-4) + ".txt";
 					Log.d("ProjectPageActivity", "Importing clip at path: " + extras.getString(IMPORT_CLIP_PATH));
 					Log.d("ProjectPageActivity", "Importing result string at path: " + textPath);
-					BufferedReader reader = new BufferedReader(new FileReader(textPath));
-					String nextLine = reader.readLine();
-					String resultString = "";
-					while (nextLine != null) {
-						resultString = resultString + nextLine;
-						nextLine = reader.readLine();
-					}
-					reader.close();
-					project.addClip(importedClip, resultString);
+					
+					project.addClip(importedClip, getResultString(textPath));
 				}				
 			} else {
 				showNamingAlert();
@@ -388,6 +381,18 @@ public class ProjectPageActivity extends Activity {
 				setupUI(innerView);
 			}
 		}
+	}
+	
+	private String getResultString(String path) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(path));
+		String nextLine = reader.readLine();
+		String resultString = "";
+		while (nextLine != null) {
+			resultString = resultString + nextLine;
+			nextLine = reader.readLine();
+		}
+		reader.close();
+		return resultString;
 	}
 
 }
