@@ -86,20 +86,22 @@ public class ImportActivity extends Activity {
 					}
 
 					if ((pName.length() == 0 || filename.contains(pName)) && filename.length() > 0) {
+						final String projectPath = mProjectPath;
 
 						Button fileButton = new Button(this);
 						Button deleteButton = new Button(this);
 						fileButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 						fileButton.setText(filename);
-						fileButton.setWidth(600);
-						fileButton.setHeight(8);
+						//fileButton.setWidth(LinearLayout.LayoutParams.FILL_PARENT);
+						fileButton.setWidth(300);
+						fileButton.setHeight(7);
 						fileButton.setOnClickListener (new View.OnClickListener() {
 
 							@Override
 							public void onClick(View arg0) {
 								Intent intent;
 								intent = new Intent(ImportActivity.this, ProjectPageActivity.class);
-								intent.putExtra(ProjectPageActivity.PROJECT_PATH, mProjectPath);
+								intent.putExtra(ProjectPageActivity.PROJECT_PATH, projectPath);
 								if (filetype.equals(PCM))
 									intent.putExtra(ProjectPageActivity.IMPORT_CLIP_PATH, path);
 								startActivity(intent);
@@ -107,13 +109,14 @@ public class ImportActivity extends Activity {
 						});
 
 						deleteButton.setBackgroundResource(R.drawable.ic_action_discard);
+						deleteButton.setHeight(8);
 						deleteButton.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View v) {
 								showAlertBeforeDelete(new File(path));
 							}
 						});
-						Log.d("ImportActivity", "adding file to linear layout with index " + numFiles);
+						//Log.d("ImportActivity", "adding file to linear layout with index " + numFiles);
 						ll.addView(fileButton, numFiles);
 						deleteButtonLayout.addView(deleteButton, numFiles++);
 					}
