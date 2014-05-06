@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -35,7 +37,7 @@ import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
 
 
 public class RecordClipActivity extends Activity implements OnsetHandler{
-	
+
 	static final int SAMPLE_RATE = 32000;
 	private Button startRecording;
 	private Button stopRecording;
@@ -43,23 +45,24 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	private Button backbtn;
 	private boolean isRecording = false;
 	private File clip1;
-	
+
 	private static String audioFilePath;
 	private static String fileName="";
 	private static String filePath="";
+	private static String txtPath="";
 	private static String result = "";
 	private String randomName = "";
 	private Chronometer chrono;
-	
+
 	Thread listeningThread;
 	private AudioRecord recorder;
 	private byte[] buffer;
 	private PercussionOnsetDetector mPercussionOnsetDetector;
 	private be.hogent.tarsos.dsp.AudioFormat tarsosFormat;
 	private static ArrayList<Double> beatList = new ArrayList<Double>();
-	
+
 	private ProjectFile project;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,7 +73,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		playRecording = (Button) findViewById(R.id.playButton);
 		backbtn = (Button) findViewById(R.id.backButton);
 		chrono = (Chronometer) findViewById(R.id.chronometer);
-		
+
 		Intent intent = getIntent();
 		String message = intent.getStringExtra(ProjectPageActivity.PROJECT_PATH);
 		try {
@@ -79,23 +82,23 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			//all purpose exception catcher
 			e1.printStackTrace();
 		}
-		
+
 		/**
 		 * Hide "start recording" button
 		 * Enable "stop recording" button
 		 * Setup recording and beat detection
 		 */
 		startRecording.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				beatList = new ArrayList<Double>();
 				listen();
 			}
 		});
-		
+
 		stopRecording.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				stopRecording.setEnabled(false);
@@ -110,9 +113,9 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				}
 			}
 		});
-		
+
 		playRecording.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				stopRecording.setEnabled(true);
@@ -125,23 +128,23 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				}
 			}
 		});
-		
+
 		backbtn.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(RecordClipActivity.this, ProjectPageActivity.class);
-                intent.putExtra("filePath", filePath);
-                intent.putExtra("fileName", fileName);
-                intent.putExtra("result", result);
-                intent.putExtra(ProjectPageActivity.PROJECT_PATH, project.getProjectPath());
+				intent.putExtra("filePath", filePath);
+				intent.putExtra("fileName", fileName);
+				intent.putExtra("result", result);
+				intent.putExtra(ProjectPageActivity.PROJECT_PATH, project.getProjectPath());
 				startActivity(intent);
 			}
 		});
-		
+
 		audioFilePath = this.getFilesDir().getPath() + "/";
 
-		
+
 		// STEP 1: set up recorder... same as in loopback example
 		int minBufferSize = AudioRecord.getMinBufferSize(
 				SAMPLE_RATE,
@@ -155,11 +158,11 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				AudioFormat.ENCODING_PCM_16BIT,
 				minBufferSize);
 		// END STEP 1
-				
+
 		// STEP 2: create percussion detector
 		mPercussionOnsetDetector = new PercussionOnsetDetector(SAMPLE_RATE, minBufferSize/2, this, 80, 10);
 		// END STEP 2
-		
+
 	}
 
 	@Override
@@ -168,8 +171,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		getMenuInflater().inflate(R.menu.record_clip, menu);
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Set UI elements for recording mode
 	 * 
@@ -191,7 +194,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		chrono.stop();
 		chrono.setBase(SystemClock.elapsedRealtime());
 	}
-	
+
 	public void playAudio () throws IOException
 	{
 		playRecording.setEnabled(false);
@@ -234,9 +237,9 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			at.stop();
 			at.release();
 		} //else
-//			Log.d("TCAudio", "audio track is not initialised ");
+		//			Log.d("TCAudio", "audio track is not initialised ");
 	}
-	
+
 	public void showAlertRecordNaming()
 	{
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -250,15 +253,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		input.setSelection(input.getText().length());
 		input.setSelectAllOnFocus(true);
 		alert.setView(input);
-		
-		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			  public void onClick(DialogInterface dialog, int whichButton) {
-			    // Canceled.
-			  }
-			});
-		
 		alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-			
+
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				if (input.getText().toString() != randomName) {
@@ -267,6 +263,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 						fileName = fileName + ".pcm";
 					}
 					filePath = audioFilePath+fileName;
+					txtPath = audioFilePath+fileName.substring(0,fileName.length()-4)+".txt";
 					File f = new File(filePath);
 					clip1.renameTo(f);
 				} else {
@@ -276,17 +273,25 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				File clip = new File(filePath);
 				result = generateBeatTime();
 				project.addClip(clip, result);
+				PrintWriter writer;
+				try {
+					writer = new PrintWriter(txtPath, "UTF-8");
+					writer.println(result);
+					writer.close();
+					Log.d("RecordClipActivity", "result written at path: " + txtPath);
+				} catch (Exception e) {
+					//all purpose exception catcher
+					e.printStackTrace();
+				} 
 			}
 		});
-		
 
-		
 		AlertDialog alertToShow = alert.create();
 		alertToShow.getWindow().setSoftInputMode(
 		    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 		alertToShow.show();
 	}
-	
+
 	/**
 	 * Call method to setup UI state
 	 * Start recording on new thread
@@ -298,24 +303,24 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		filePath = audioFilePath+randomName;
 		isRecording = true;
 		tarsosFormat = new be.hogent.tarsos.dsp.AudioFormat(
-						(float)SAMPLE_RATE, // sample rate
-						16, // bit depth
-						1, // channels
-						true, // signed samples?
-						false // big endian?
-						);
-		
+				(float)SAMPLE_RATE, // sample rate
+				16, // bit depth
+				1, // channels
+				true, // signed samples?
+				false // big endian?
+				);
+
 		Thread listeningThread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				FileOutputStream os = null;
 				clip1 = new File(filePath);
-			    try {
-			    	 os = new FileOutputStream(clip1);
-			    } catch (FileNotFoundException e) {
-			        e.printStackTrace();
-			    }
+				try {
+					os = new FileOutputStream(clip1);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
 				while (isRecording) {
 					int bufferReadResult =
 							recorder.read(buffer, 0, buffer.length);
@@ -326,34 +331,34 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 					audioEvent.setFloatBufferWithByteBuffer(buffer);
 					mPercussionOnsetDetector.process(audioEvent);
 					try {
-			            os.write(buffer, 0, buffer.length);
-			        } catch (IOException e) {
-			            e.printStackTrace();
-			        }
+						os.write(buffer, 0, buffer.length);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 				try {
-			        os.close();
-		            Log.d("RecordClipActivity", "Audio file written at path: " + filePath);
-			    } catch (IOException e) {
-			        e.printStackTrace();
-			    }
+					os.close();
+					Log.d("RecordClipActivity", "Audio file written at path: " + filePath);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
-			
+
 		});
-		
+
 		listeningThread.start();
 	}
-	
+
 	private void resetRecorder(){
 		if (null != recorder) {
-	        isRecording = false;
+			isRecording = false;
 
-	        recorder.stop();
-	        recorder.release();
+			recorder.stop();
+			recorder.release();
 
-	        recorder = null;
-	        listeningThread = null;
-	    }
+			recorder = null;
+			listeningThread = null;
+		}
 		setupReadytoRecordUI();
 	}
 
@@ -362,21 +367,21 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		beatList.add(time);
 		final TextView beatDetector = (TextView) findViewById(R.id.beatDetector);
 		runOnUiThread(new Runnable() {
-			  public void run() {
-				  new CountDownTimer(500, 250) {
+			public void run() {
+				new CountDownTimer(500, 250) {
 
-			     	     public void onTick(long millisUntilFinished) {
-			     	    	 beatDetector.setText("Beat!");
-			     	     }
+					public void onTick(long millisUntilFinished) {
+						beatDetector.setText("Beat!");
+					}
 
-			     	     public void onFinish() {
-			     	    	 beatDetector.setText("");
-			     	     }
-					}.start();
-			  }
-			});
+					public void onFinish() {
+						beatDetector.setText("");
+					}
+				}.start();
+			}
+		});
 	}
-	
+
 	private String generateBeatTime(){
 		StringBuilder stringBuilder = new StringBuilder();
 		double difference;
@@ -412,14 +417,14 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 					stringBuilder.append("|");
 					stringBuilder.append("z"+ length);
 					measurePosition = length;
-					
+
 				}
 			}
 		}
 		stringBuilder.append("C");
 		return stringBuilder.toString();
 	}
-	
+
 	private String getRandomName() {
 		Scanner scanner = null;
 		ArrayList<String> dict = new ArrayList<String>();

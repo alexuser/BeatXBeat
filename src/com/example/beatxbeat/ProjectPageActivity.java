@@ -1,8 +1,10 @@
 package com.example.beatxbeat;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,8 +77,12 @@ public class ProjectPageActivity extends Activity {
 
 				if (extras.containsKey(IMPORT_CLIP_PATH)) {
 					File importedClip = new File(extras.getString(IMPORT_CLIP_PATH));
-					BeatTranscriber ct = new BeatTranscriber(importedClip);
-					project.addClip(importedClip, ct.getResults());
+					String textPath = importedClip.getPath();
+					textPath = textPath.substring(0, textPath.length()-4) + ".txt";
+					Log.d("ProjectPageActivity", "Importing clip at path: " + extras.getString(IMPORT_CLIP_PATH));
+					Log.d("ProjectPageActivity", "Importing result string at path: " + textPath);
+					
+					project.addClip(importedClip, getResultString(textPath));
 				}				
 			} else {
 				showNamingAlert();
@@ -373,6 +379,18 @@ public class ProjectPageActivity extends Activity {
 				setupUI(innerView);
 			}
 		}
+	}
+	
+	private String getResultString(String path) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(path));
+		String nextLine = reader.readLine();
+		String resultString = "";
+		while (nextLine != null) {
+			resultString = resultString + nextLine;
+			nextLine = reader.readLine();
+		}
+		reader.close();
+		return resultString;
 	}
 
 }
