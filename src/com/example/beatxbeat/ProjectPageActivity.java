@@ -52,9 +52,6 @@ public class ProjectPageActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_project_page);
 
-		//ActionBar actionBar = getActionBar();
-		//actionBar.setDisplayHomeAsUpEnabled(true);
-
 		recordBtn = (Button) findViewById(R.id.newClip);
 		importBtn = (Button) findViewById(R.id.importClip);
 		transcribeBtn = (Button) findViewById(R.id.transcribeBtn);
@@ -119,10 +116,13 @@ public class ProjectPageActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(ProjectPageActivity.this, TranscribePageActivity.class);
-				try {
+
+				if(!project.getClips().isEmpty()){
 					intent.putExtra(PROJECT_PATH, project.getProjectPath());
 					startActivity(intent);
-				} catch (Exception e) {
+					}
+				else{
+
 
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 							ProjectPageActivity.this);
@@ -146,6 +146,7 @@ public class ProjectPageActivity extends Activity {
 					// show it
 					alertDialog.show();
 				}
+
 			}
 		});
 
