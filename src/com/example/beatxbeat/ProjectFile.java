@@ -126,6 +126,7 @@ public class ProjectFile {
 	public void addClip(File pFile, String result){
 		Element root = mDoc.getDocumentElement();
 		Element clip = mDoc.createElement(CLIP_ATTRIBUTE);
+		String s = pFile.getPath();
 		clip.setAttribute(CLIP_ATTRIBUTE, pFile.getPath());
 		clip.setAttribute(CLIP_RESULT_ATTRIBUTE, result);
 		root.appendChild(clip);

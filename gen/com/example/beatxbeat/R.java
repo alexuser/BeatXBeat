@@ -27,21 +27,23 @@ public final class R {
     }
     public static final class drawable {
         public static final int button_border=0x7f020000;
-        public static final int button_red=0x7f020001;
-        public static final int custom_btn_beige=0x7f020002;
-        public static final int custom_btn_haiti=0x7f020003;
-        public static final int homepage=0x7f020004;
-        public static final int ic_action_discard=0x7f020005;
-        public static final int ic_launcher=0x7f020006;
-        public static final int playicon=0x7f020007;
-        public static final int record=0x7f020008;
-        public static final int recordicon=0x7f020009;
-        public static final int searchicon=0x7f02000a;
-        public static final int stopicon=0x7f02000b;
+        public static final int button_grey=0x7f020001;
+        public static final int button_red=0x7f020002;
+        public static final int custom_btn_beige=0x7f020003;
+        public static final int custom_btn_haiti=0x7f020004;
+        public static final int homepage=0x7f020005;
+        public static final int ic_action_discard=0x7f020006;
+        public static final int ic_launcher=0x7f020007;
+        public static final int playicon=0x7f020008;
+        public static final int record=0x7f020009;
+        public static final int recordicon=0x7f02000a;
+        public static final int searchicon=0x7f02000b;
+        public static final int stopicon=0x7f02000c;
     }
     public static final class id {
-        public static final int action_settings=0x7f080016;
+        public static final int action_settings=0x7f080017;
         public static final int backButton=0x7f080014;
+        public static final int beatDetector=0x7f080015;
         public static final int chronometer=0x7f080013;
         public static final int clipName=0x7f080009;
         public static final int container=0x7f080000;
@@ -62,7 +64,7 @@ public final class R {
         public static final int timer=0x7f08000a;
         public static final int transcribeBtn=0x7f08000e;
         public static final int waveform=0x7f080001;
-        public static final int webView1=0x7f080015;
+        public static final int webView1=0x7f080016;
     }
     public static final class layout {
         public static final int activity_edit_clip=0x7f030000;

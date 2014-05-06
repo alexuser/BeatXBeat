@@ -19,6 +19,7 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.TextView;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.onsets.OnsetHandler;
 import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
@@ -99,11 +101,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				playRecording.setEnabled(true);
 				if (isRecording){
 					isRecording = false;
+					resetRecorder();
 					showAlertRecordNaming();
-					setupReadytoRecordUI();
-					File clip = new File(filePath);
-					result = generateBeatTime();
-					project.addClip(clip, result);
 				} else {
 					startRecording.setEnabled(false);
 					resetRecorder();
@@ -266,6 +265,10 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				} else {
 					fileName = randomName;
 				}
+				setupReadytoRecordUI();
+				File clip = new File(filePath);
+				result = generateBeatTime();
+				project.addClip(clip, result);
 			}
 		});
 		
@@ -350,6 +353,21 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	@Override
 	public void handleOnset(double time, double salience) {
 		beatList.add(time);
+		final TextView beatDetector = (TextView) findViewById(R.id.beatDetector);
+		runOnUiThread(new Runnable() {
+			  public void run() {
+				  new CountDownTimer(500, 250) {
+
+			     	     public void onTick(long millisUntilFinished) {
+			     	    	 beatDetector.setText("Beat!");
+			     	     }
+
+			     	     public void onFinish() {
+			     	    	 beatDetector.setText("");
+			     	     }
+					}.start();
+			  }
+			});
 	}
 	
 	private String generateBeatTime(){
