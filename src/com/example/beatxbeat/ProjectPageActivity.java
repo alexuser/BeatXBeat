@@ -298,20 +298,18 @@ public class ProjectPageActivity extends Activity {
 				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				String filename = filepath.substring(filepath.lastIndexOf("/")+1);
 
-				Pattern pattern = Pattern.compile("\\S+[.]pcm(\\w+[.]pcm)");
+				Pattern pattern = Pattern.compile("(?i)([\\s\\w]+).pcm");
 				Matcher matcher = pattern.matcher(filename);
 				matcher.find();
 				try {
 					clip.setText(matcher.group(1));
-				} catch (Exception e1) {
-					pattern = Pattern.compile("\\/(\\S*.pcm)");
-					matcher = pattern.matcher(filename);
-					try {
-						clip.setText(matcher.group(1));
-					} catch (Exception e) {
-						e.printStackTrace();
-						clip.setText(filename);
-					}
+				} 
+				catch (Exception e1) {
+					clip.setText(filename);
+				}
+						
+
+				
 					clip.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View v) {
@@ -320,7 +318,7 @@ public class ProjectPageActivity extends Activity {
 							startActivity(intent);
 						}
 					});
-				}
+				
 				playButton.setText("Play");
 
 				playButton.setOnClickListener(new View.OnClickListener() {
