@@ -82,12 +82,24 @@ public class BeatTranscriber implements OnsetHandler{
 			//all purpose exception catcher
 			e.printStackTrace();
 		}
-		AudioEvent audioEvent =
+		final AudioEvent audioEvent =
 				new AudioEvent(
 						tarsosFormat,
 						bufferReadResult);
-		audioEvent.setFloatBufferWithByteBuffer(buffer);
-		mPercussionOnsetDetector.process(audioEvent);
+		
+		Thread listeningThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				audioEvent.setFloatBufferWithByteBuffer(buffer);
+				mPercussionOnsetDetector.process(audioEvent);
+			}
+			
+		});
+		
+		listeningThread.start();
+		
 		return displayBeatTime(beatList);
 	}
 }
