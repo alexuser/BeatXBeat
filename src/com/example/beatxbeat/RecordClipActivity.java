@@ -392,36 +392,41 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			length = (int) (difference * 4);
 			stringBuilder.append("C");
 			measurePosition++;
-			if(measurePosition==4){
+			//if the measure is finished, add a bar
+			if (measurePosition == 4) {
 				stringBuilder.append("|");
 				measurePosition = 0;
 			}
-			//if rest is longer than 4 time units, add rests and bars
-			while(length>=4){
+			//if there is enough rest to complete the measure, add rest and then a bar
+			if (length + measurePosition >= 4) {
 				stringBuilder.append("z" + (4 - measurePosition));
 				length -= (4 - measurePosition);
 				stringBuilder.append("|");
 				measurePosition = 0;
 			}
-			//if rest is less than 4 time units
-			if(length>0){
-				//if rest fits inside current measure
-				if(length+measurePosition<=4){
-					stringBuilder.append("z"+length);
-					measurePosition+=length;
-				}
-				//fill up measure, add bar, then add rest
-				else{
-					stringBuilder.append("z" + (4 - measurePosition));
-					length -= (4 - measurePosition);
-					stringBuilder.append("|");
-					stringBuilder.append("z"+ length);
-					measurePosition = length;
-
-				}
+			//if there are full measures of rest, add them
+			while (length >= 4) {
+				stringBuilder.append("z" + 4);
+				length -= 4;
+				stringBuilder.append("|");
+				measurePosition = 0;
 			}
+			//add the leftover rest
+			if (length > 0) {
+				stringBuilder.append("z" + length);
+				measurePosition += length;
+				if (measurePosition == 4) {
+					stringBuilder.append("|");
+					measurePosition = 0;
+				}
+			}	
 		}
 		stringBuilder.append("C");
+		if (measurePosition != 3) {
+			stringBuilder.append("z" + (3 - measurePosition));
+		}
+		stringBuilder.append("|");
+		System.out.println(stringBuilder.toString());
 		return stringBuilder.toString();
 	}
 

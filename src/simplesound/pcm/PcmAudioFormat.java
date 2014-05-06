@@ -31,7 +31,7 @@ public class PcmAudioFormat {
      */
     private final boolean signed;
 
-    protected PcmAudioFormat(int sampleRate, int sampleSizeInBits, int channels, boolean bigEndian, boolean signed) {
+    public PcmAudioFormat(int sampleRate, int sampleSizeInBits, int channels, boolean bigEndian, boolean signed) {
 
         if (sampleRate < 1)
             throw new IllegalArgumentException("sampleRate cannot be less than one. But it is:" + sampleRate);
