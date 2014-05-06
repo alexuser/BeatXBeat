@@ -58,7 +58,7 @@ public class ProjectPageActivity extends Activity {
 
 		Bundle extras = this.getIntent().getExtras();
 
-		projectNameTextView = (TextView) findViewById(R.id.projectName);
+		projectNameTextView = (EditText) findViewById(R.id.projectName);
 
 		if (!extras.containsKey(PROJECT_PATH)) {
 			Log.e("ProjectPageActivity", "No project path found. How did you get to this page?");
@@ -168,7 +168,27 @@ public class ProjectPageActivity extends Activity {
 		for (int i = 0; i < viewGroup.getChildCount(); i++){
 			setupUI(viewGroup.getChildAt(i));
 		}
-
+		
+//		projectNameTextView.setOnEditorActionListener(new OnEditorActionListener() {
+//
+//	        @Override
+//	        public boolean onEditorAction(TextView v, int actionId,
+//	                KeyEvent event) {
+//	            if (event != null&& (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+//
+//	                // NOTE: In the author's example, he uses an identifier
+//	                // called searchBar. If setting this code on your EditText
+//	                // then use v.getWindowToken() as a reference to your 
+//	                // EditText is passed into this callback as a TextView
+//
+//	                hideSoftKeyboard();
+//	               // Must return true here to consume event
+//	               return true;
+//
+//	            }
+//	            return false;
+//	        }
+//	    });
 	}
 
 	@Override

@@ -24,6 +24,7 @@
         android:layout_marginTop="16dp"
         android:drawableLeft="@drawable/searchicon"
         android:ems="20"
+        android:singleLine="true"
         android:hint="search term goes here" />
 
     <ScrollView
