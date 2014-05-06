@@ -218,21 +218,16 @@ public class ImportActivity extends Activity {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
 		alert.setTitle("Delete Clip");
-		alert.setMessage("Warning: File delete cannot be undone! Type 'yes' to confirm.");
+		alert.setMessage("Warning: File delete cannot be undone! Press 'Continue' to confirm.");
 
-		// Set an EditText view to get user input 
-		final EditText input = new EditText(this);
-		alert.setView(input);
 
 		alert.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				if (input.getText().toString().equals("yes")||input.getText().toString().equals("Yes")){
-					pFile.delete();
-					listFiles("", mFileType);
-				}
-			}
+				pFile.delete();
+				listFiles("", mFileType);
+		}
 		});
 
 		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

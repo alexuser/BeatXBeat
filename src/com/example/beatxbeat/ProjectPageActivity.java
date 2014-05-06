@@ -1,8 +1,10 @@
 package com.example.beatxbeat;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +29,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,9 +51,6 @@ public class ProjectPageActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_project_page);
-
-		//ActionBar actionBar = getActionBar();
-		//actionBar.setDisplayHomeAsUpEnabled(true);
 
 		recordBtn = (Button) findViewById(R.id.newClip);
 		importBtn = (Button) findViewById(R.id.importClip);
@@ -74,8 +74,12 @@ public class ProjectPageActivity extends Activity {
 
 				if (extras.containsKey(IMPORT_CLIP_PATH)) {
 					File importedClip = new File(extras.getString(IMPORT_CLIP_PATH));
-					BeatTranscriber ct = new BeatTranscriber(importedClip);
-					project.addClip(importedClip, ct.getResults());
+					String textPath = importedClip.getPath();
+					textPath = textPath.substring(0, textPath.length()-4) + ".txt";
+					Log.d("ProjectPageActivity", "Importing clip at path: " + extras.getString(IMPORT_CLIP_PATH));
+					Log.d("ProjectPageActivity", "Importing result string at path: " + textPath);
+					
+					project.addClip(importedClip, getResultString(textPath));
 				}				
 			} else {
 				showNamingAlert();
@@ -112,10 +116,13 @@ public class ProjectPageActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(ProjectPageActivity.this, TranscribePageActivity.class);
-				try {
+
+				if(!project.getClips().isEmpty()){
 					intent.putExtra(PROJECT_PATH, project.getProjectPath());
 					startActivity(intent);
-				} catch (Exception e) {
+					}
+				else{
+
 
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 							ProjectPageActivity.this);
@@ -139,6 +146,7 @@ public class ProjectPageActivity extends Activity {
 					// show it
 					alertDialog.show();
 				}
+
 			}
 		});
 
@@ -169,26 +177,6 @@ public class ProjectPageActivity extends Activity {
 			setupUI(viewGroup.getChildAt(i));
 		}
 		
-//		projectNameTextView.setOnEditorActionListener(new OnEditorActionListener() {
-//
-//	        @Override
-//	        public boolean onEditorAction(TextView v, int actionId,
-//	                KeyEvent event) {
-//	            if (event != null&& (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-//
-//	                // NOTE: In the author's example, he uses an identifier
-//	                // called searchBar. If setting this code on your EditText
-//	                // then use v.getWindowToken() as a reference to your 
-//	                // EditText is passed into this callback as a TextView
-//
-//	                hideSoftKeyboard();
-//	               // Must return true here to consume event
-//	               return true;
-//
-//	            }
-//	            return false;
-//	        }
-//	    });
 	}
 
 	@Override
@@ -256,13 +244,13 @@ public class ProjectPageActivity extends Activity {
 
 		// Set an EditText view to get user input 
 		final EditText input = new EditText(this);
+		input.setSelectAllOnFocus(true);
 
 		Scanner scanner = null;
 		ArrayList<String> dict = new ArrayList<String>();
 		try {
 			scanner = new Scanner(getAssets().open("dictionary/dict.txt"));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -285,7 +273,12 @@ public class ProjectPageActivity extends Activity {
 				projectNameTextView.setText(projectName);
 			}
 		});
-		namingAlert.show();
+		
+		//Forces the soft keyboard to show up while naming
+		AlertDialog alertToShow = namingAlert.create();
+		alertToShow.getWindow().setSoftInputMode(
+		    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+		alertToShow.show();
 	}
 
 	/**
@@ -312,20 +305,18 @@ public class ProjectPageActivity extends Activity {
 				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				String filename = filepath.substring(filepath.lastIndexOf("/")+1);
 
-				Pattern pattern = Pattern.compile("\\S+[.]pcm(\\w+[.]pcm)");
+				Pattern pattern = Pattern.compile("(?i)([\\s\\w]+).pcm");
 				Matcher matcher = pattern.matcher(filename);
 				matcher.find();
 				try {
 					clip.setText(matcher.group(1));
-				} catch (Exception e1) {
-					pattern = Pattern.compile("\\/(\\S*.pcm)");
-					matcher = pattern.matcher(filename);
-					try {
-						clip.setText(matcher.group(1));
-					} catch (Exception e) {
-						e.printStackTrace();
-						clip.setText(filename);
-					}
+				} 
+				catch (Exception e1) {
+					clip.setText(filename);
+				}
+						
+
+				
 					clip.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View v) {
@@ -334,7 +325,7 @@ public class ProjectPageActivity extends Activity {
 							startActivity(intent);
 						}
 					});
-				}
+				
 				playButton.setText("Play");
 
 				playButton.setOnClickListener(new View.OnClickListener() {
@@ -389,6 +380,18 @@ public class ProjectPageActivity extends Activity {
 				setupUI(innerView);
 			}
 		}
+	}
+	
+	private String getResultString(String path) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(path));
+		String nextLine = reader.readLine();
+		String resultString = "";
+		while (nextLine != null) {
+			resultString = resultString + nextLine;
+			nextLine = reader.readLine();
+		}
+		reader.close();
+		return resultString;
 	}
 
 }
