@@ -119,6 +119,7 @@ public class ProjectFile {
 
 	/**
 	 * Attempts to add the recorded clip with its beat representation to the project.
+	 * Also creates a new 
 	 * 
 	 * @param pFile The file of the recorded clip.
 	 * @param result The string representation of the beat time of the clip.
@@ -133,12 +134,15 @@ public class ProjectFile {
 		save();
 	}
 
+
 	/**
 	 * Attempts to remove the recorded clip from the project.
 	 * 
 	 * @param pFile The file of the recorded clip.
+	 * @param pPermDelete Boolean flag that selects whether or not to delete
+	 * the file permanently.
 	 */
-	public void removeClip(File pFile) {
+	public void removeClip(File pFile, boolean pPermDelete) {
 		Element root = mDoc.getDocumentElement();
 		NodeList listClips = root.getChildNodes();
 		Node nodeToRemove = null;
@@ -148,10 +152,13 @@ public class ProjectFile {
 				nodeToRemove = clip;
 			}
 		}
-		if (nodeToRemove != null) {
+		if (nodeToRemove != null && pPermDelete) {
 			root.removeChild(nodeToRemove);
 			boolean deleted = pFile.delete();
 			Log.d("ProjectFile", "The clip file has " + (deleted ? "":"not ") + "been deleted!");
+			File resultFile = new File(pFile.getPath().replace(".pcm", ".txt"));
+			deleted = resultFile.delete();
+			Log.d("ProjectFile", "The result file has " + (deleted ? "":"not ") + "been deleted!");
 			save();
 		}
 	}
