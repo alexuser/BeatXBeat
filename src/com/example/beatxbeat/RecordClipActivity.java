@@ -49,7 +49,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	private static String result = "";
 	private String randomName = "";
 	private Chronometer chrono;
-	//private ImageView miclogo;
 	
 	Thread listeningThread;
 	private AudioRecord recorder;
@@ -248,6 +247,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		final EditText input = new EditText(this);
 		input.setText(randomName);
 		input.setSelection(input.getText().length());
+		input.setSelectAllOnFocus(true);
 		alert.setView(input);
 		
 		alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {

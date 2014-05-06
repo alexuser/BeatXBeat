@@ -256,13 +256,13 @@ public class ProjectPageActivity extends Activity {
 
 		// Set an EditText view to get user input 
 		final EditText input = new EditText(this);
+		input.setSelectAllOnFocus(true);
 
 		Scanner scanner = null;
 		ArrayList<String> dict = new ArrayList<String>();
 		try {
 			scanner = new Scanner(getAssets().open("dictionary/dict.txt"));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
