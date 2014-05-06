@@ -384,15 +384,29 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				stringBuilder.append("|");
 				measurePosition = 0;
 			}
+			//if rest is longer than 4 time units, add rests and bars
 			while(length>=4){
 				stringBuilder.append("z" + (4 - measurePosition));
-				length-=(4 - measurePosition);
-				measurePosition = 0;
+				length -= (4 - measurePosition);
 				stringBuilder.append("|");
+				measurePosition = 0;
 			}
+			//if rest is less than 4 time units
 			if(length>0){
-				stringBuilder.append("z"+length);
-				measurePosition+=length;
+				//if rest fits inside current measure
+				if(length+measurePosition<=4){
+					stringBuilder.append("z"+length);
+					measurePosition+=length;
+				}
+				//fill up measure, add bar, then add rest
+				else{
+					stringBuilder.append("z" + (4 - measurePosition));
+					length -= (4 - measurePosition);
+					stringBuilder.append("|");
+					stringBuilder.append("z"+ length);
+					measurePosition = length;
+					
+				}
 			}
 		}
 		stringBuilder.append("C");
