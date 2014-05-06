@@ -26,6 +26,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
@@ -252,7 +253,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		input.setSelection(input.getText().length());
 		input.setSelectAllOnFocus(true);
 		alert.setView(input);
-
 		alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
 
 			@Override
@@ -286,12 +286,10 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			}
 		});
 
-		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// Canceled.
-			}
-		});
-		alert.show();
+		AlertDialog alertToShow = alert.create();
+		alertToShow.getWindow().setSoftInputMode(
+		    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+		alertToShow.show();
 	}
 
 	/**
