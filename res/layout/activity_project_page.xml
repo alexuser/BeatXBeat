@@ -7,6 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/background_notext"
     tools:context=".ProjectPageActivity" >
 
     <LinearLayout
@@ -62,13 +63,14 @@
 
     <Button
         android:id="@+id/transcribeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
         android:layout_alignBaseline="@+id/projectName"
         android:layout_alignBottom="@+id/projectName"
         android:layout_alignParentRight="true"
-        android:background="@drawable/button_red"
-        android:text="Transcribe" />
+        android:background="@drawable/button_border"
+        android:text="Transcribe" 
+        android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/newClip"
