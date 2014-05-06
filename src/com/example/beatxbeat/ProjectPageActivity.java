@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -169,26 +170,6 @@ public class ProjectPageActivity extends Activity {
 			setupUI(viewGroup.getChildAt(i));
 		}
 		
-//		projectNameTextView.setOnEditorActionListener(new OnEditorActionListener() {
-//
-//	        @Override
-//	        public boolean onEditorAction(TextView v, int actionId,
-//	                KeyEvent event) {
-//	            if (event != null&& (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-//
-//	                // NOTE: In the author's example, he uses an identifier
-//	                // called searchBar. If setting this code on your EditText
-//	                // then use v.getWindowToken() as a reference to your 
-//	                // EditText is passed into this callback as a TextView
-//
-//	                hideSoftKeyboard();
-//	               // Must return true here to consume event
-//	               return true;
-//
-//	            }
-//	            return false;
-//	        }
-//	    });
 	}
 
 	@Override
@@ -285,7 +266,12 @@ public class ProjectPageActivity extends Activity {
 				projectNameTextView.setText(projectName);
 			}
 		});
-		namingAlert.show();
+		
+		//Forces the soft keyboard to show up while naming
+		AlertDialog alertToShow = namingAlert.create();
+		alertToShow.getWindow().setSoftInputMode(
+		    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+		alertToShow.show();
 	}
 
 	/**
