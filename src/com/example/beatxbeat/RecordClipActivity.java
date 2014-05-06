@@ -89,6 +89,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			
 			@Override
 			public void onClick(View arg0) {
+				beatList = new ArrayList<Double>();
 				listen();
 			}
 		});
@@ -107,7 +108,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 					startRecording.setEnabled(false);
 					resetRecorder();
 				}
-				beatList = new ArrayList<Double>();
 			}
 		});
 		
@@ -390,8 +390,10 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				measurePosition = 0;
 				stringBuilder.append("|");
 			}
-			stringBuilder.append("z"+length);
-			measurePosition+=length;
+			if(length>0){
+				stringBuilder.append("z"+length);
+				measurePosition+=length;
+			}
 		}
 		stringBuilder.append("C");
 		return stringBuilder.toString();

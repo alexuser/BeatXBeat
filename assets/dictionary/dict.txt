@@ -12,7 +12,7 @@ Daring
 Defiance
 Delight
 Devoted
-ExcitedEye-opening
+Excited
 Faith
 Fearless
 Fulfill
@@ -26,7 +26,7 @@ Hope
 Jaw-dropping
 Jubilant
 Magic
-Mind-blowingMiracle
+Miracle
 Pluck
 Sensational
 Spectacular
@@ -46,9 +46,6 @@ marine biomes
 marsh
 marshland
 meadow
-Mediterranean forest
-Mediterranean scrub
-Mediterranean woodland
 mire
 mixed forest
 montane grassland
@@ -75,7 +72,6 @@ shore
 shorebirds
 snacks
 snorkel
-soft serve ice cream
 spray
 starfish
 sun
