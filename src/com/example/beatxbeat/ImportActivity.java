@@ -83,7 +83,8 @@ public class ImportActivity extends Activity {
 						fileButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 						fileButton.setText(filename);
 						fileButton.setWidth(300);
-						fileButton.setHeight(7);
+						//fileButton.setHeight(7);
+						fileButton.setBackgroundResource(R.drawable.button_border);
 						fileButton.setOnClickListener (new View.OnClickListener() {
 
 							@Override

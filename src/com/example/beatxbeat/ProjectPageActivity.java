@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -294,10 +295,17 @@ public class ProjectPageActivity extends Activity {
 				clip.setId(index+1);
 				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				clip.setWidth(200);
-				clip.setHeight(7);
+				//clip.setHeight(7);
+				clip.setBackgroundColor(R.drawable.button_border);
+				//clip.setTextColor(Color.WHITE);
+				//playButton.setText("Play");
 				playButton.setId(playButton.hashCode());
 				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
+				playButton.setBackgroundResource(R.drawable.ic_action_play);
+				playButton.setTextColor(Color.WHITE);
 				String filename = filepath.substring(filepath.lastIndexOf("/")+1);
+				deleteButton.setBackgroundResource(R.drawable.ic_action_discard);
+				//deleteButton.setHeight(8);
 
 				Pattern pattern = Pattern.compile("(?i)([\\s\\w]+).pcm");
 				Matcher matcher = pattern.matcher(filename);
@@ -325,9 +333,7 @@ public class ProjectPageActivity extends Activity {
 					options.addView(clip);
 				}
 				clips.add(clip);
-				
-
-				playButton.setText("Play");
+								
 				playButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -348,8 +354,6 @@ public class ProjectPageActivity extends Activity {
 				options.addView(playButton, playLP);
 				playButtons.add(playButton);
 				
-				deleteButton.setBackgroundResource(R.drawable.ic_action_discard);
-				deleteButton.setHeight(8);
 				deleteButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
