@@ -3,6 +3,9 @@ package com.example.beatxbeat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import com.musicg.graphic.GraphicRender;
@@ -22,12 +25,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.os.Build;
 
 public class EditClipActivity extends Activity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,49 +39,59 @@ public class EditClipActivity extends Activity {
 		
 		Intent intent = getIntent();
 		String filepath = intent.getStringExtra("filepath");
-		
-		//Convert pcm to wav
 		File pcm = new File(filepath);
-		System.out.println(pcm);
-//		byte[] data = new byte[(int) pcm.length()];
-//		FileInputStream fileInputStream;
-//		try {
-//			fileInputStream = new FileInputStream(pcm);
-//			fileInputStream.read(data);
-//		} catch (FileNotFoundException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-		File wav = null;
+		String resultPath = filepath.substring(0,filepath.length()-4)+".txt";
+		File result = new File(resultPath);
+		
+		String tempPCM = this.getFilesDir().getPath().toString() + "/temporary.pcm";
+		File trimmedPCM = new File(tempPCM);
+		String tempResult = this.getFilesDir().getPath().toString() + "/temporary.txt";
+		File trimmedResult = new File(tempResult);
+		
+		byte[] byteData = null;
+		byteData = new byte[(int) pcm.length()];
+		FileInputStream in = null;
+		FileOutputStream out = null;
+		
+		char[] charData = null;
+		charData = new char[(int) result.length()];
+		FileReader read = null;
+		FileWriter write = null;
+		
 		try {
-			PcmAudioHelper.convertRawToWav(new WavAudioFormat(44100, 16, 1, true), pcm, wav);
+			in = new FileInputStream(pcm);
+			in.read(byteData);
+			in.close(); 
+			out = new FileOutputStream(trimmedPCM);
+			out.write(byteData, 0, byteData.length/2);
+			out.flush();
+			out.close();
+			trimmedPCM.renameTo(pcm);
+			
+			read = new FileReader(result);
+			read.read(charData);
+			read.close();
+			write = new FileWriter(trimmedResult);
+			write.write(charData, 0, charData.length/2);
+			write.flush();
+			write.close();
+			trimmedResult.renameTo(result);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(wav);
+		Button done = (Button) findViewById(R.id.doneEdit);
+		done.setOnClickListener(new View.OnClickListener() {         
+		    @Override
+		    public void onClick(View v)
+		    {
+		      // some code
+		      EditClipActivity.this.finish();
+		    }
+		});
 		
-		//Draw waveform 
-		Wave wave = new Wave();
-		System.out.println(wave);
-		wave.leftTrim(1);
-		wave.rightTrim(0.5F);
-		System.out.println(wave);
-		WaveFileManager waveFileManager=new WaveFileManager(wave);
-		String wavPath = this.getExternalFilesDir(null).getPath() + "/waveform.wav";
-		waveFileManager.saveWaveAsFile(wavPath);
-//		GraphicRender render=new GraphicRender();
-//		render.setHorizontalMarker(1);
-//		render.setVerticalMarker(1);
-//		String jpgPath = this.getExternalFilesDir(null).getPath() + "/waveform.jpg";
-//		render.renderWaveform(wave, jpgPath);
-//		ImageView waveform = (ImageView) findViewById(R.id.waveform);
-//		File jpg = new File(jpgPath);
-//		Bitmap myBitmap = BitmapFactory.decodeFile(jpg.getAbsolutePath());
-//	    waveform.setImageBitmap(myBitmap);
 	}
 
 	@Override
