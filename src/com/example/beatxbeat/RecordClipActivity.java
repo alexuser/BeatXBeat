@@ -426,7 +426,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			stringBuilder.append("z" + (3 - measurePosition));
 		}
 		stringBuilder.append("|");
-		System.out.println(stringBuilder.toString());
 		return stringBuilder.toString();
 	}
 
