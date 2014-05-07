@@ -33,7 +33,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -78,7 +78,7 @@ public class ProjectPageActivity extends Activity {
 					textPath = textPath.substring(0, textPath.length()-4) + ".txt";
 					Log.d("ProjectPageActivity", "Importing clip at path: " + extras.getString(IMPORT_CLIP_PATH));
 					Log.d("ProjectPageActivity", "Importing result string at path: " + textPath);
-					
+
 					project.addClip(importedClip, getResultString(textPath));
 				}				
 			} else {
@@ -169,14 +169,14 @@ public class ProjectPageActivity extends Activity {
 			}
 		});
 
-		
+
 		//Setup the method to allow the keyboard to be hidden when clicking elswhere on screen
 		ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView().findViewById(android.R.id.content).getParent();
 
 		for (int i = 0; i < viewGroup.getChildCount(); i++){
 			setupUI(viewGroup.getChildAt(i));
 		}
-		
+
 	}
 
 	@Override
@@ -273,11 +273,11 @@ public class ProjectPageActivity extends Activity {
 				projectNameTextView.setText(projectName);
 			}
 		});
-		
+
 		//Forces the soft keyboard to show up while naming
 		AlertDialog alertToShow = namingAlert.create();
 		alertToShow.getWindow().setSoftInputMode(
-		    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 		alertToShow.show();
 	}
 
@@ -289,16 +289,15 @@ public class ProjectPageActivity extends Activity {
 	 */
 	private void setupClips() {
 		ScrollView clipNames = (ScrollView) findViewById(R.id.clipName);
-		ScrollView playButtons = (ScrollView) findViewById(R.id.play_buttons);
-		LinearLayout clipLayout = new LinearLayout(this);
-		LinearLayout playButtonLayout = new LinearLayout(this);
-		clipLayout.setOrientation(LinearLayout.VERTICAL);
-		playButtonLayout.setOrientation(LinearLayout.VERTICAL);
+		RelativeLayout options = (RelativeLayout) findViewById(R.id.scroll_linear_layout);
 
 		if (!project.getClips().isEmpty()) {
+			options.removeAllViews();
 			int index = 0;
+			ArrayList<Button> clips = new ArrayList<Button>();
 			for (final String filepath : project.getClips()) {
 				Button clip = new Button(this);
+				clip.setId(index+1);
 				Button playButton = new Button(this);
 
 				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
@@ -314,18 +313,25 @@ public class ProjectPageActivity extends Activity {
 				catch (Exception e1) {
 					clip.setText(filename);
 				}
-						
+				clip.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(ProjectPageActivity.this, EditClipActivity.class);
+						intent.putExtra("filepath", filepath);
+						startActivity(intent);
+					}
+				});
+				RelativeLayout.LayoutParams clipLP = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				if (index > 0) {
+					clipLP.addRule(RelativeLayout.BELOW, clips.get(index-1).getId());
+					options.addView(clip, clipLP);
+				} else {
+					options.addView(clip);
+				}
+				clips.add(clip);
+				
 
-				
-					clip.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							Intent intent = new Intent(ProjectPageActivity.this, EditClipActivity.class);
-							intent.putExtra("filepath", filepath);
-							startActivity(intent);
-						}
-					});
-				
 				playButton.setText("Play");
 
 				playButton.setOnClickListener(new View.OnClickListener() {
@@ -339,14 +345,17 @@ public class ProjectPageActivity extends Activity {
 					}
 				});
 
-				clipLayout.addView(clip, index);
-				playButtonLayout.addView(playButton, index++);
+				RelativeLayout.LayoutParams playLP = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				playLP.addRule(RelativeLayout.RIGHT_OF, clip.getId());
+				if (index > 0) {
+					playLP.addRule(RelativeLayout.BELOW, clips.get(index-1).getId());
+				} 
+				index++;
+				options.addView(playButton, playLP);
 			}
 			clipNames.removeAllViews();
-			clipNames.addView(clipLayout);
-			playButtons.removeAllViews();
-			playButtons.addView(playButtonLayout);
-
+			clipNames.addView(options);
 		}
 	}
 
@@ -381,7 +390,7 @@ public class ProjectPageActivity extends Activity {
 			}
 		}
 	}
-	
+
 	private String getResultString(String path) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(path));
 		String nextLine = reader.readLine();

@@ -1,17 +1,10 @@
 package com.example.beatxbeat;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,13 +14,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 public class ImportActivity extends Activity {
@@ -63,14 +55,11 @@ public class ImportActivity extends Activity {
 
 	private void listFiles(CharSequence pName, String fileType) {
 		ScrollView fileList = (ScrollView) findViewById(R.id.file_select_scrollview);
-		ScrollView deleteButtons = (ScrollView) findViewById(R.id.delete_buttons);
-		LinearLayout deleteButtonLayout = new LinearLayout(this);
-		LinearLayout ll = new LinearLayout(this);
-		ll.setOrientation(LinearLayout.VERTICAL);
-		deleteButtonLayout.setOrientation(LinearLayout.VERTICAL);
+		RelativeLayout ll = new RelativeLayout(this);
 
 		File[] files = this.getFilesDir().listFiles();
 		int numFiles = 0;
+		ArrayList<Button> buttons = new ArrayList<Button>();
 		if (files != null) {
 			for (File file : files) {
 				Log.d("ImportActivity", "file found at path: " + file.getPath());
@@ -89,10 +78,10 @@ public class ImportActivity extends Activity {
 						final String projectPath = mProjectPath;
 
 						Button fileButton = new Button(this);
+						fileButton.setId(numFiles+1);
 						Button deleteButton = new Button(this);
 						fileButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 						fileButton.setText(filename);
-						//fileButton.setWidth(LinearLayout.LayoutParams.FILL_PARENT);
 						fileButton.setWidth(300);
 						fileButton.setHeight(7);
 						fileButton.setOnClickListener (new View.OnClickListener() {
@@ -107,6 +96,15 @@ public class ImportActivity extends Activity {
 								startActivity(intent);
 							}
 						});
+						RelativeLayout.LayoutParams fileLP = new RelativeLayout.LayoutParams(
+								RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+						if (numFiles > 0) {
+							fileLP.addRule(RelativeLayout.BELOW, buttons.get(numFiles-1).getId());
+							ll.addView(fileButton, fileLP);
+						} else {
+							ll.addView(fileButton);
+						}
+						buttons.add(fileButton);
 
 						deleteButton.setBackgroundResource(R.drawable.ic_action_discard);
 						deleteButton.setHeight(8);
@@ -117,8 +115,14 @@ public class ImportActivity extends Activity {
 							}
 						});
 						//Log.d("ImportActivity", "adding file to linear layout with index " + numFiles);
-						ll.addView(fileButton, numFiles);
-						deleteButtonLayout.addView(deleteButton, numFiles++);
+						RelativeLayout.LayoutParams deleteLP = new RelativeLayout.LayoutParams(
+								RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+						deleteLP.addRule(RelativeLayout.RIGHT_OF, fileButton.getId());
+						if (numFiles > 0) {
+							deleteLP.addRule(RelativeLayout.BELOW, buttons.get(numFiles-1).getId());
+						} 
+						numFiles++;
+						ll.addView(deleteButton, deleteLP);
 					}
 
 					// so far only implemented project selection. 
@@ -145,8 +149,6 @@ public class ImportActivity extends Activity {
 		}
 		fileList.removeAllViews();
 		fileList.addView(ll);
-		deleteButtons.removeAllViews();
-		deleteButtons.addView(deleteButtonLayout);
 	}
 
 	private void setupSearchBar() {
