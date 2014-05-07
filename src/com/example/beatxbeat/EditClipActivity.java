@@ -8,18 +8,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import com.musicg.graphic.GraphicRender;
-import com.musicg.wave.Wave;
-import com.musicg.wave.WaveFileManager;
-import com.musicg.wave.WaveHeader;
-
-import simplesound.pcm.PcmAudioHelper;
-import simplesound.pcm.WavAudioFormat;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,26 +29,40 @@ public class EditClipActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_clip);
 		
+		// create RangeSeekBar as Integer range between 20 and 75
+		RangeSeekBar<Integer> seekBar = new RangeSeekBar<Integer>(20, 75, this);
+//		seekBar.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Integer>() {
+//		        @Override
+//		        public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
+//		              
+//		        }
+//		});
+
+		// add RangeSeekBar to pre-defined layout
+//		ViewGroup layout = (ViewGroup) findViewById();
+//		layout.addView(seekBar);
+		
+		
 		Intent intent = getIntent();
 		String filepath = intent.getStringExtra("filepath");
 		File pcm = new File(filepath);
-		String resultPath = filepath.substring(0,filepath.length()-4)+".txt";
-		File result = new File(resultPath);
+//		String resultPath = filepath.substring(0,filepath.length()-4)+".txt";
+//		File result = new File(resultPath);
 		
 		String tempPCM = this.getFilesDir().getPath().toString() + "/temporary.pcm";
 		File trimmedPCM = new File(tempPCM);
-		String tempResult = this.getFilesDir().getPath().toString() + "/temporary.txt";
-		File trimmedResult = new File(tempResult);
+//		String tempResult = this.getFilesDir().getPath().toString() + "/temporary.txt";
+//		File trimmedResult = new File(tempResult);
 		
 		byte[] byteData = null;
 		byteData = new byte[(int) pcm.length()];
 		FileInputStream in = null;
 		FileOutputStream out = null;
 		
-		char[] charData = null;
-		charData = new char[(int) result.length()];
-		FileReader read = null;
-		FileWriter write = null;
+//		char[] charData = null;
+//		charData = new char[(int) result.length()];
+//		FileReader read = null;
+//		FileWriter write = null;
 		
 		try {
 			in = new FileInputStream(pcm);
@@ -68,14 +74,17 @@ public class EditClipActivity extends Activity {
 			out.close();
 			trimmedPCM.renameTo(pcm);
 			
-			read = new FileReader(result);
-			read.read(charData);
-			read.close();
-			write = new FileWriter(trimmedResult);
-			write.write(charData, 0, charData.length/2);
-			write.flush();
-			write.close();
-			trimmedResult.renameTo(result);
+			BeatTranscriber bt = new BeatTranscriber(trimmedPCM);
+			bt.getResults();
+			
+//			read = new FileReader(result);
+//			read.read(charData);
+//			read.close();
+//			write = new FileWriter(trimmedResult);
+//			write.write(charData, 0, charData.length/2);
+//			write.flush();
+//			write.close();
+//			trimmedResult.renameTo(result);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

@@ -41,7 +41,9 @@ public final class R {
         public static final int screenthree=0x7f02000c;
         public static final int screentwo=0x7f02000d;
         public static final int searchicon=0x7f02000e;
-        public static final int stopicon=0x7f02000f;
+        public static final int seek_thumb_normal=0x7f02000f;
+        public static final int seek_thumb_pressed=0x7f020010;
+        public static final int stopicon=0x7f020011;
     }
     public static final class id {
         public static final int action_settings=0x7f08001a;
