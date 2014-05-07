@@ -24,7 +24,6 @@ import org.xml.sax.SAXException;
 import android.content.Context;
 import android.util.Log;
 
-
 public class ProjectFile {
 
 	private DocumentBuilderFactory mDBFactory;
@@ -83,13 +82,6 @@ public class ProjectFile {
 				throw new IOException("Invalid file - file is not a BeatbyBeat project.");
 			}
 			mName = root.getAttribute(PROJECT_NAME_ATTRIBUTE);
-			//			//Code below is in progress
-			//			NodeList listClips = root.getChildNodes();
-			//			for ( int i = 0; i < listClips.getLength(); i++ ) {
-			//				Element clip = (Element) listClips.item(i);
-			//				String clipName = clip.getAttribute(CLIP_ATTRIBUTE);
-			//			}
-			//			////
 		}
 	}
 
@@ -127,7 +119,6 @@ public class ProjectFile {
 	public void addClip(File pFile, String result){
 		Element root = mDoc.getDocumentElement();
 		Element clip = mDoc.createElement(CLIP_ATTRIBUTE);
-		String s = pFile.getPath();
 		clip.setAttribute(CLIP_ATTRIBUTE, pFile.getPath());
 		clip.setAttribute(CLIP_RESULT_ATTRIBUTE, result);
 		root.appendChild(clip);
@@ -152,13 +143,15 @@ public class ProjectFile {
 				nodeToRemove = clip;
 			}
 		}
-		if (nodeToRemove != null && pPermDelete) {
+		if (nodeToRemove != null) {
 			root.removeChild(nodeToRemove);
-			boolean deleted = pFile.delete();
-			Log.d("ProjectFile", "The clip file has " + (deleted ? "":"not ") + "been deleted!");
-			File resultFile = new File(pFile.getPath().replace(".pcm", ".txt"));
-			deleted = resultFile.delete();
-			Log.d("ProjectFile", "The result file has " + (deleted ? "":"not ") + "been deleted!");
+			if (pPermDelete) {
+				boolean deleted = pFile.delete();
+				Log.d("ProjectFile", "The clip file has " + (deleted ? "":"not ") + "been deleted!");
+				File resultFile = new File(pFile.getPath().replace(".pcm", ".txt"));
+				deleted = resultFile.delete();
+				Log.d("ProjectFile", "The result file has " + (deleted ? "":"not ") + "been deleted!");
+			}
 			save();
 		}
 	}
@@ -180,7 +173,7 @@ public class ProjectFile {
 		}
 		return listOfFilenames;
 	}
-	
+
 	/**
 	 * Returns a hashmap mapping the clip name to the clip beat result. 
 	 * @return HashMap of clipnames mapped to the clip result
@@ -208,7 +201,7 @@ public class ProjectFile {
 	public String getName() {
 		return mName;
 	}
-	
+
 	/**
 	 * Changes the project name. Should delete old project file and create a new one.
 	 * 
@@ -222,7 +215,7 @@ public class ProjectFile {
 		Element root = mDoc.getDocumentElement();
 		root.setAttribute(PROJECT_NAME_ATTRIBUTE, mName);
 		save();
-		
+
 	}
 
 	/**
@@ -235,6 +228,6 @@ public class ProjectFile {
 		return path;
 	}
 
-	
-	
+
+
 }
