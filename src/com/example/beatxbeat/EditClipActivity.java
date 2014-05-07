@@ -7,8 +7,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import com.example.beatxbeat.RangeSeekBar.OnRangeSeekBarChangeListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.example.beatxbeat.RangeSeekBar.OnRangeSeekBarChangeListener;
 
 public class EditClipActivity extends Activity {
 	
@@ -34,6 +37,16 @@ public class EditClipActivity extends Activity {
 		
 		Intent intent = getIntent();
 		String filepath = intent.getStringExtra("filepath");
+		TextView clipName = (TextView) findViewById(R.id.clipName);
+		Pattern pattern = Pattern.compile("(?i)([\\s\\w]+).pcm");
+		Matcher matcher = pattern.matcher(filepath);
+		matcher.find();
+		try {
+			clipName.setText(matcher.group(1));
+		} 
+		catch (Exception e1) {
+			clipName.setText(filepath);
+		}
 		pcm = new File(filepath);
 		size = (int) pcm.length();
 		

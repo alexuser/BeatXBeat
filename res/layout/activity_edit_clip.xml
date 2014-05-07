@@ -18,10 +18,21 @@
         <Button
             android:id="@+id/doneEdit"
         	android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+	        android:layout_width="100dp"
+	        android:layout_height="30dp"
         	android:layout_margin="100dp"
-            android:text="Trim!" />
+        	android:background="@drawable/button_border"
+            android:text="Trim!"
+            android:textColor="#FFFFFF" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/clipName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:text="clipName" />
 
 </RelativeLayout>

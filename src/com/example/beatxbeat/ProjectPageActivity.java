@@ -294,7 +294,7 @@ public class ProjectPageActivity extends Activity {
 
 				clip.setId(index+1);
 				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-				clip.setWidth(200);
+				clip.setWidth(300);
 				//clip.setHeight(7);
 				clip.setBackgroundColor(R.drawable.button_border);
 				//clip.setTextColor(Color.WHITE);
