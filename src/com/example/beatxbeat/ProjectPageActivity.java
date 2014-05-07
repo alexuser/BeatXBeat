@@ -70,23 +70,16 @@ public class ProjectPageActivity extends Activity {
 				Log.d("ProjectPageActivity", "Opening project file at path: " + extras.getString(PROJECT_PATH));
 				project = new ProjectFile(this, new File(extras.getString(PROJECT_PATH)), null);
 				projectNameTextView.setText(project.getName());
-				//TODO need to figure out how to calculate result string for beat
-
-
 				if (extras.containsKey(IMPORT_CLIP_PATH)) {
 					File importedClip = new File(extras.getString(IMPORT_CLIP_PATH));
 					String textPath = importedClip.getPath();
 					textPath = textPath.substring(0, textPath.length()-4) + ".txt";
 					Log.d("ProjectPageActivity", "Importing clip at path: " + extras.getString(IMPORT_CLIP_PATH));
 					Log.d("ProjectPageActivity", "Importing result string at path: " + textPath);
-
 					project.addClip(importedClip, getResultString(textPath));
 				}				
 			} else {
 				showNamingAlert();
-				//				while (projectName == null) {
-				//					this.wait(1000);
-				//				}
 				project = new ProjectFile(this, null, projectName);
 			}
 			project.save();
@@ -103,7 +96,6 @@ public class ProjectPageActivity extends Activity {
 					project.setProjectName(projectName);
 				}
 			});
-
 			setupClips();
 		} catch (Exception e1) {
 			//all purpose exception catcher
@@ -123,14 +115,9 @@ public class ProjectPageActivity extends Activity {
 					startActivity(intent);
 					}
 				else{
-
-
-					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-							ProjectPageActivity.this);
-
+					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProjectPageActivity.this);
 					// set title
 					alertDialogBuilder.setTitle("Error... :(");
-
 					// set dialog message
 					alertDialogBuilder
 					.setMessage("Something went wrong, make sure you have clips in your project to transcribe")
@@ -140,10 +127,8 @@ public class ProjectPageActivity extends Activity {
 							//return to the project page
 						}
 					});
-
 					// create alert dialog
 					AlertDialog alertDialog = alertDialogBuilder.create();
-
 					// show it
 					alertDialog.show();
 				}
@@ -170,14 +155,12 @@ public class ProjectPageActivity extends Activity {
 			}
 		});
 
-
 		//Setup the method to allow the keyboard to be hidden when clicking elswhere on screen
 		ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView().findViewById(android.R.id.content).getParent();
 
 		for (int i = 0; i < viewGroup.getChildCount(); i++){
 			setupUI(viewGroup.getChildAt(i));
 		}
-
 	}
 
 	@Override
@@ -195,6 +178,12 @@ public class ProjectPageActivity extends Activity {
 
 	}
 
+	/**
+	 * Plays the audio file at the given file path.
+	 * 
+	 * @param filePath Path of the audio file.
+	 * @throws IOException
+	 */
 	public void playAudio (String filePath) throws IOException
 	{
 		if (filePath==null)
@@ -296,12 +285,17 @@ public class ProjectPageActivity extends Activity {
 			options.removeAllViews();
 			int index = 0;
 			ArrayList<Button> clips = new ArrayList<Button>();
+			ArrayList<Button> playButtons = new ArrayList<Button>();
 			for (final String filepath : project.getClips()) {
 				Button clip = new Button(this);
-				clip.setId(index+1);
 				Button playButton = new Button(this);
+				Button deleteButton = new Button(this);
 
+				clip.setId(index+1);
 				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
+				clip.setWidth(200);
+				clip.setHeight(7);
+				playButton.setId(playButton.hashCode());
 				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				String filename = filepath.substring(filepath.lastIndexOf("/")+1);
 
@@ -334,7 +328,6 @@ public class ProjectPageActivity extends Activity {
 				
 
 				playButton.setText("Play");
-
 				playButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -352,12 +345,50 @@ public class ProjectPageActivity extends Activity {
 				if (index > 0) {
 					playLP.addRule(RelativeLayout.BELOW, clips.get(index-1).getId());
 				} 
-				index++;
 				options.addView(playButton, playLP);
+				playButtons.add(playButton);
+				
+				deleteButton.setBackgroundResource(R.drawable.ic_action_discard);
+				deleteButton.setHeight(8);
+				deleteButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						showAlertBeforeDelete(new File(filepath));
+					}
+				});
+				//Log.d("ImportActivity", "adding file to linear layout with index " + numFiles);
+				RelativeLayout.LayoutParams deleteLP = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				deleteLP.addRule(RelativeLayout.RIGHT_OF, playButton.getId());
+				if (index > 0) {
+					deleteLP.addRule(RelativeLayout.BELOW, clips.get(index-1).getId());
+				} 
+				index++;
+				options.addView(deleteButton, deleteLP);
 			}
 			clipNames.removeAllViews();
 			clipNames.addView(options);
+		} else {
+			clipNames.removeAllViews();
+			clipNames.addView(createFillerTextView());
 		}
+	}
+	
+	/**
+	 * Instantiates and sets up the filler TextView that appears when
+	 * the project has no clips in it.
+	 * @return TextView that says "Recordings Go Here"
+	 */
+	private TextView createFillerTextView() {
+		TextView tv = new TextView(this);
+		tv.setId(R.id.recording_filler);
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		params.setMargins(0, 38, 0, 0);
+		tv.setLayoutParams(params);
+		tv.setTextAppearance(this, android.R.style.TextAppearance_Medium);
+		tv.setText("Recordings Go Here");
+		return tv;
 	}
 
 	public void hideSoftKeyboard() {
@@ -366,17 +397,14 @@ public class ProjectPageActivity extends Activity {
 	}
 
 	public void setupUI(View view) {
-
 		//Set up touch listener for non-text box views to hide keyboard.
 		if(!(view instanceof EditText)) {
-
 			view.setOnTouchListener(new OnTouchListener() {
 
 				public boolean onTouch(View v, MotionEvent event) {
 					hideSoftKeyboard();
 					return false;
 				}
-
 			});
 		}
 
@@ -392,6 +420,12 @@ public class ProjectPageActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Reads the .txt file and extracts the beat transcription result string.
+	 * @param path Path of the text file containing result string.
+	 * @return the Result string in the text file
+	 * @throws IOException
+	 */
 	private String getResultString(String path) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(path));
 		String nextLine = reader.readLine();
@@ -402,6 +436,30 @@ public class ProjectPageActivity extends Activity {
 		}
 		reader.close();
 		return resultString;
+	}
+	
+	private void showAlertBeforeDelete(final File pFile) {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+		alert.setTitle("Delete Clip From Project");
+		alert.setMessage("Warning: Delete cannot be undone! Press 'Continue' to confirm.");
+
+		alert.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				project.removeClip(pFile, false);
+				project.save();
+				setupClips();
+		}
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// Canceled.
+			}
+		});
+		alert.show();
 	}
 
 }
