@@ -6,23 +6,22 @@
     tools:context="com.example.beatxbeat.EditClipActivity"
     tools:ignore="MergeRootFrame" >
 
-    <ImageView
-        android:id="@+id/waveform"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="92dp"
-        android:src="@drawable/button_border" />
 
-    <Button
-        android:id="@+id/doneEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="31dp"
-        android:layout_toLeftOf="@+id/waveform"
-        android:text="Back" />
+    <RelativeLayout
+        android:id="@+id/editLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="50dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/doneEdit"
+        	android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        	android:layout_margin="100dp"
+            android:text="Trim!" />
+    </RelativeLayout>
 
 </RelativeLayout>

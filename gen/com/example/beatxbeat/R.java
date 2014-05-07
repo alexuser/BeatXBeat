@@ -55,6 +55,7 @@ public final class R {
         public static final int continueProjectBtn=0x7f080004;
         public static final int delete_buttons=0x7f080007;
         public static final int doneEdit=0x7f080002;
+        public static final int editLayout=0x7f080001;
         public static final int file_select_scrollview=0x7f080006;
         public static final int importClip=0x7f080011;
         public static final int import_search_bar=0x7f080005;
@@ -71,7 +72,6 @@ public final class R {
         public static final int stopButton=0x7f080012;
         public static final int timer=0x7f08000c;
         public static final int transcribeBtn=0x7f080010;
-        public static final int waveform=0x7f080001;
         public static final int webView1=0x7f080018;
     }
     public static final class layout {
