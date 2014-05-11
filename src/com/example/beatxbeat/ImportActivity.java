@@ -137,15 +137,29 @@ public class ImportActivity extends Activity {
 		if (files == null || numFiles == 0) {
 			Button b = new Button(this);
 			b.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-			b.setText("Click here to start a new project");
-			b.setOnClickListener(new View.OnClickListener() {
+			if (mFileType.equals(XML)) {
+				b.setText("Click here to start a new project");
+				b.setOnClickListener(new View.OnClickListener() {
 
-				public void onClick(View v) {
-					Intent intent = new Intent(ImportActivity.this, ProjectPageActivity.class);
-					intent.putExtra(ProjectPageActivity.PROJECT_PATH, "");
-					startActivity(intent);
-				}
-			});
+					public void onClick(View v) {
+						Intent intent = new Intent(ImportActivity.this, ProjectPageActivity.class);
+						intent.putExtra(ProjectPageActivity.PROJECT_PATH, "");
+						startActivity(intent);
+					}
+				});
+			} else if (mFileType.equals(PCM)) {
+				b.setText("Click here to go back to project page");
+				b.setOnClickListener(new View.OnClickListener() {
+
+					public void onClick(View v) {
+						Intent intent = new Intent(ImportActivity.this, ProjectPageActivity.class);
+						intent.putExtra(ProjectPageActivity.PROJECT_PATH, mProjectPath);
+						startActivity(intent);
+					}
+				});
+			}
+			
+
 			ll.addView(b, 0);
 		}
 		fileList.removeAllViews();

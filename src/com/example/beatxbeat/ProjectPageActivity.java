@@ -43,7 +43,7 @@ public class ProjectPageActivity extends Activity {
 	private Button recordBtn, importBtn, transcribeBtn;
 	private TextView projectNameTextView;
 	private String projectName;
-	static final int SAMPLE_RATE = 44100;
+	static final int SAMPLE_RATE = 32000;
 
 	private ProjectFile project;
 	public final static String PROJECT_PATH = "com.example.beatxbeat.PROJECT_PATH";
