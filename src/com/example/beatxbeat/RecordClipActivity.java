@@ -53,6 +53,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	private static String result = "";
 	private String randomName = "";
 	private Chronometer chrono;
+	Thread playingThread;
 
 	Thread listeningThread;
 	private AudioRecord recorder;
@@ -73,6 +74,9 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		playRecording = (Button) findViewById(R.id.playButton);
 		backbtn = (Button) findViewById(R.id.backButton);
 		chrono = (Chronometer) findViewById(R.id.chronometer);
+		stopRecording.setEnabled(true);
+		playRecording.setEnabled(true);
+		startRecording.setEnabled(true);
 
 		Intent intent = getIntent();
 		String message = intent.getStringExtra(ProjectPageActivity.PROJECT_PATH);
@@ -93,22 +97,26 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			@Override
 			public void onClick(View arg0) {
 				beatList = new ArrayList<Double>();
+				startRecording.setVisibility(View.INVISIBLE);
+				stopRecording.setVisibility(View.VISIBLE);
+				playRecording.setVisibility(View.INVISIBLE);
 				listen();
 			}
 		});
 
 		stopRecording.setOnClickListener(new View.OnClickListener() {
 
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onClick(View v) {
-				stopRecording.setEnabled(false);
-				playRecording.setEnabled(true);
+				startRecording.setVisibility(View.VISIBLE);
+				stopRecording.setVisibility(View.INVISIBLE);
+				playRecording.setVisibility(View.VISIBLE);
 				if (isRecording){
 					isRecording = false;
 					resetRecorder();
 					showAlertRecordNaming();
 				} else {
-					startRecording.setEnabled(false);
 					resetRecorder();
 				}
 			}
@@ -118,14 +126,33 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 
 			@Override
 			public void onClick(View v) {
-				stopRecording.setEnabled(true);
-				startRecording.setEnabled(false);
-				playRecording.setEnabled(false);
-				try {
-					playAudio();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				startRecording.setVisibility(View.INVISIBLE);
+				stopRecording.setVisibility(View.VISIBLE);
+				playRecording.setVisibility(View.INVISIBLE);
+				
+				playingThread = new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						try {
+							playAudio();
+						} catch (IOException e) {
+							e.printStackTrace();
+						} finally {
+							runOnUiThread(new Runnable() {
+
+		                        @Override
+		                        public void run() {
+		                        	playRecording.setVisibility(View.VISIBLE);
+		                        	stopRecording.setVisibility(View.INVISIBLE);
+		                        	startRecording.setVisibility(View.VISIBLE);
+		                        }
+		                    });
+						}
+					}
+
+				});
+				playingThread.start();
 			}
 		});
 
@@ -178,18 +205,18 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	 * 
 	 */
 	private void setupRecordingUI() {
-		stopRecording.setEnabled(true);
-		playRecording.setEnabled(false);
-		startRecording.setEnabled(false);
+//		stopRecording.setEnabled(true);
+//		playRecording.setEnabled(false);
+//		startRecording.setEnabled(false);
 		chrono.setBase(SystemClock.elapsedRealtime());
 		chrono.setVisibility(View.VISIBLE);
 		chrono.start();
 	}
 
 	private void setupReadytoRecordUI() {
-		stopRecording.setEnabled(false);
-		playRecording.setEnabled(true);
-		startRecording.setEnabled(false);
+//		stopRecording.setEnabled(false);
+//		playRecording.setEnabled(true);
+//		startRecording.setEnabled(false);
 		chrono.setVisibility(View.INVISIBLE);
 		chrono.stop();
 		chrono.setBase(SystemClock.elapsedRealtime());
@@ -197,9 +224,9 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 
 	public void playAudio () throws IOException
 	{
-		playRecording.setEnabled(false);
-		startRecording.setEnabled(false);
-		stopRecording.setEnabled(true);
+//		playRecording.setEnabled(false);
+//		startRecording.setEnabled(false);
+//		stopRecording.setEnabled(true);
 		if (filePath==null){
 			Log.d("plaback", "file not found for playback in RecordClipActivity");
 			return;
