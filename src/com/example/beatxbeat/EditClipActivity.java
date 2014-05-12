@@ -23,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +41,18 @@ public class EditClipActivity extends Activity {
 	private int size = 0;
 	private static Button play;
 	private static Button done;
+	private String title = "Sample Beat";
+	private String beats = "[V:one] CDC \\n"
+			+ "[V:two] CDC";
+	private String voices = "V:one clef=perc name = \"Samp1\"  \\n V:two clef = perc name = \"Samp2\" \\n";
+	private String abcString = "X:1 \\n"
+			+ "T: " + title + " \\n"
+			+ "Q:240\\n "
+			+ "L:1/4\\n"
+			+ voices
+			+ beats;
+	
+	private static WebView webView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +67,14 @@ public class EditClipActivity extends Activity {
 		matcher.find();
 		try {
 			clipName.setText(matcher.group(1));
+			title = matcher.group(1);
 		} 
 		catch (Exception e1) {
 			clipName.setText(filepath);
+			title = filepath;
 		}
+		
+		
 		pcm = new File(filepath);
 		size = (int) pcm.length();
 		max = size;
@@ -69,10 +87,12 @@ public class EditClipActivity extends Activity {
 		seekBar.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Integer>() {
 		        @Override
 		        public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
-		              min = minValue;
-		              max = maxValue;
-		              EditClipActivity.play.setVisibility(View.VISIBLE);
-		              EditClipActivity.done.setVisibility(View.VISIBLE);
+		            min = minValue;
+		            max = maxValue;
+		            EditClipActivity.play.setVisibility(View.VISIBLE);
+		            EditClipActivity.done.setVisibility(View.VISIBLE);
+		              
+					refreshWebView();
 		        }
 		});
 		
@@ -104,6 +124,11 @@ public class EditClipActivity extends Activity {
 		Toast.makeText(getApplicationContext(), "Press the Android back button to return without trimming.", Toast.LENGTH_LONG ).show();
 		play.setVisibility(View.INVISIBLE);
 		done.setVisibility(View.INVISIBLE);
+		
+		this.webView = (WebView)findViewById(R.id.webView1);
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.loadUrl("file:///android_asset/www/index.html");
+		refreshWebView();
 	}
 
 	@Override
@@ -126,7 +151,7 @@ public class EditClipActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private void trim(File pFile, File rFile, int beginning, int end) {
+	private void trim(File pFile, File rFile) {
 		//create temporary files
 		String tempPCM = this.getFilesDir().getPath().toString() + "/temporary.pcm";
 		File trimmedPCM = new File(tempPCM);
@@ -283,6 +308,35 @@ public class EditClipActivity extends Activity {
 		}
 	}
 	
+	private void refreshWebView(){
+		char[] charData = null;
+		charData = new char[(int) pcm.length()];
+		FileReader read;
+		try {
+			read = new FileReader(result);
+			read.read(charData);
+			read.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		double beg = ((double)min)/size;
+		double en = ((double)max)/size;
+		beats = "[V:0]" + getTrimmed(charData,beg,en);
+        voices = "V:0 clef=perc \\n";
+		abcString = "X:1 \\n"
+		+ "T: " + title + " \\n"
+		+ "Q:240\\n "
+		+ "L:1/4\\n"
+		+ voices
+		+ beats;
+          
+        webView.loadUrl("javascript:ABCJS.renderAbc(\"canvas\","
+            		+ "' " + abcString +  " ', "
+            		+ "{},"
+            		+ " {'editable': false, 'staffwidth': 400, 'scale': 0.7 },"
+            		+ " {});");
+	}
+	
 	private void showAlertBeforeSave(final File pcm, final File result, final int min, final int max) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -294,7 +348,7 @@ public class EditClipActivity extends Activity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				trim(pcm,result,min,max);
+				trim(pcm,result);
 				EditClipActivity.this.finish();
 		}
 		});

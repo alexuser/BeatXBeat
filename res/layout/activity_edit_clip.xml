@@ -13,8 +13,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
-        android:textSize="32sp"
-        android:text="clipName" />
+        android:text="clipName"
+        android:textSize="32sp" />
 
     <RelativeLayout
         android:id="@+id/editLayout"
@@ -23,30 +23,6 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="70dp"
         android:orientation="vertical" >
-
-        <Button
-            android:id="@+id/doneEdit"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/playTrimmed"
-            android:layout_marginTop="37dp"
-            android:background="@drawable/button_border"
-            android:text="Save Trim Changes"
-            android:textColor="#FFFFFF" />
-
-        <Button
-            android:id="@+id/playTrimmed"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/textView1"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/button_border"
-            android:text="Play Trimmed Clip"
-            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/textView1"
@@ -58,8 +34,41 @@
             android:text="Move sliders to adjust trim points"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
+        <Button
+            android:id="@+id/playTrimmed"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/button_border"
+            android:text="Play Trimmed Clip"
+            android:textColor="#FFFFFF" />
+
     </RelativeLayout>
 
-    
+    <WebView
+        android:id="@+id/webView1"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:scrollbarAlwaysDrawVerticalTrack="false" />
+
+    <Button
+        android:id="@+id/doneEdit"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_alignLeft="@+id/editLayout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/editLayout"
+        android:layout_marginBottom="48dp"
+        android:background="@drawable/button_border"
+        android:text="Save Trim Changes"
+        android:textColor="#FFFFFF" />
 
 </RelativeLayout>
