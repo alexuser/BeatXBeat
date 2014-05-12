@@ -13,6 +13,9 @@ import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +28,7 @@ import com.example.beatxbeat.RangeSeekBar.OnRangeSeekBarChangeListener;
 
 public class EditClipActivity extends Activity {
 	
+	static final int SAMPLE_RATE = 32000;
 	private File pcm;
 	private File result;
 	private int min = 0;
@@ -50,11 +54,12 @@ public class EditClipActivity extends Activity {
 		}
 		pcm = new File(filepath);
 		size = (int) pcm.length();
+		max = size;
 		
 		String resultPath = filepath.substring(0,filepath.length()-4)+".txt";
 		result = new File(resultPath);
 		
-		RangeSeekBar<Integer> seekBar = new RangeSeekBar<Integer>(0, (int) size, this);
+		RangeSeekBar<Integer> seekBar = new RangeSeekBar<Integer>(0, size, this);
 		seekBar.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Integer>() {
 		        @Override
 		        public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
@@ -65,6 +70,21 @@ public class EditClipActivity extends Activity {
 		
 		ViewGroup layout = (ViewGroup) findViewById(R.id.editLayout);
 		layout.addView(seekBar);
+		
+		Button play = (Button) findViewById(R.id.playTrimmed);
+		play.setOnClickListener(new View.OnClickListener() {         
+		    @Override
+		    public void onClick(View v)
+		    {
+		      // some code
+		    	try {
+					playAudio(pcm, min, max);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		});
 		
 		Button done = (Button) findViewById(R.id.doneEdit);
 		done.setOnClickListener(new View.OnClickListener() {         
@@ -217,5 +237,43 @@ public class EditClipActivity extends Activity {
 		return trimmedResult;
 	}
 
+	/**
+	 * Plays the audio file at the given file path.
+	 * 
+	 * @param filePath Path of the audio file.
+	 * @throws IOException
+	 */
+	public void playAudio (File pFile, int beg, int end) throws IOException
+	{
+
+		byte[] byteData = null; 
+		byteData = new byte[(int) pFile.length()];
+		FileInputStream in = null;
+		try {
+			in = new FileInputStream( pFile );
+			in.read(byteData);
+			in.close(); 
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		// Set and push to audio track..
+		int intSize = android.media.AudioTrack.getMinBufferSize(
+				SAMPLE_RATE, 
+				AudioFormat.CHANNEL_OUT_MONO,
+				AudioFormat.ENCODING_PCM_16BIT); 
+		AudioTrack at = new AudioTrack(AudioManager.STREAM_MUSIC, 
+				SAMPLE_RATE, 
+				AudioFormat.CHANNEL_OUT_MONO,
+				AudioFormat.ENCODING_PCM_16BIT, 
+				intSize, 
+				AudioTrack.MODE_STREAM); 
+		if (at!=null) { 
+			at.play();
+			// Write the byte array to the track
+			at.write(byteData, 2 *(beg/2), 2*((end - beg)/2)); 
+			at.stop();
+			at.release();
+		}
+	}
 
 }

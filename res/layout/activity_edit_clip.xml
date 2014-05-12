@@ -14,15 +14,26 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="50dp"
         android:orientation="vertical" >
-
+        
         <Button
-            android:id="@+id/doneEdit"
+            android:id="@+id/playTrimmed"
         	android:layout_centerHorizontal="true"
 	        android:layout_width="100dp"
 	        android:layout_height="30dp"
         	android:layout_margin="100dp"
         	android:background="@drawable/button_border"
-            android:text="Trim!"
+            android:text="Play"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/doneEdit"
+        	android:layout_centerHorizontal="true"
+        	android:layout_below="@id/playTrimmed"
+	        android:layout_width="100dp"
+	        android:layout_height="30dp"
+        	android:layout_margin="100dp"
+        	android:background="@drawable/button_border"
+            android:text="Save"
             android:textColor="#FFFFFF" />
     </RelativeLayout>
 
