@@ -113,18 +113,29 @@ public class ProjectFile {
 
 	/**
 	 * Attempts to add the recorded clip with its beat representation to the project.
-	 * Also creates a new 
+	 * If the project already contains the clip, this method does nothing.
 	 * 
 	 * @param pFile The file of the recorded clip.
 	 * @param result The string representation of the beat time of the clip.
 	 */
-	public void addClip(File pFile, String resultPath){
+	public void addClip(File pFile, String resultPath) {
 		Element root = mDoc.getDocumentElement();
-		Element clip = mDoc.createElement(CLIP_ATTRIBUTE);
-		clip.setAttribute(CLIP_ATTRIBUTE, pFile.getPath());
-		clip.setAttribute(CLIP_RESULT_ATTRIBUTE, resultPath);
-		root.appendChild(clip);
-		save();
+		boolean hasClip = false;			
+		NodeList listClips = root.getChildNodes();
+		for ( int i = 0; i < listClips.getLength(); i++ ) {
+			Element clip = (Element) listClips.item(i);
+			if (clip.getAttribute(CLIP_ATTRIBUTE).equals(pFile.getPath())) {
+				hasClip = true;
+			}
+		}
+		if (!hasClip) {
+			Element clip = mDoc.createElement(CLIP_ATTRIBUTE);
+			clip.setAttribute(CLIP_ATTRIBUTE, pFile.getPath());
+			clip.setAttribute(CLIP_RESULT_ATTRIBUTE, resultPath);
+			root.appendChild(clip);
+			save();
+		}
+		
 	}
 
 
@@ -235,7 +246,7 @@ public class ProjectFile {
 		String path = mContext.getFilesDir().getPath() + "/beatxproject_" + mName + ".xml";
 		return path;
 	}
-	
+
 	/**
 	 * Reads the .txt file and extracts the beat transcription result string.
 	 * @param path Path of the text file containing result string.
