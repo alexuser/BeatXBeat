@@ -414,6 +414,17 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		double difference;
 		int length;
 		int measurePosition = 0;
+		//add the starting rest
+		int start = (int) (beatList.get(0) * 4);
+		while (start >= 4) {
+			stringBuilder.append("z4|");
+			start -= 4;
+		}
+		if (start != 0) {
+			stringBuilder.append("z" + start);
+			measurePosition = start;
+		}
+		//transcribe the rest starting from the first beat
 		for (int i = 1; i < beatList.size(); i++){
 			difference = beatList.get(i) - beatList.get(i-1);
 			length = (int) (difference * 4);
@@ -433,7 +444,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			}
 			//if there are full measures of rest, add them
 			while (length >= 4) {
-				stringBuilder.append("z" + 4);
+				stringBuilder.append("z4");
 				length -= 4;
 				stringBuilder.append("|");
 				measurePosition = 0;
