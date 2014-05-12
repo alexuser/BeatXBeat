@@ -300,7 +300,7 @@ public class ProjectPageActivity extends Activity {
 
 				clip.setId(index+1);
 				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-				clip.setWidth(300);
+				clip.setWidth(450);
 				clip.setBackgroundColor(R.drawable.button_border);
 				playButton.setId(playButton.hashCode());
 				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);

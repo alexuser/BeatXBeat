@@ -95,7 +95,7 @@ public class ImportActivity extends Activity {
 						Button deleteButton = new Button(this);
 						fileButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 						fileButton.setText(filename);
-						fileButton.setWidth(300);
+						fileButton.setWidth(500);
 						//fileButton.setHeight(7);
 						fileButton.setBackgroundResource(R.drawable.button_border);
 						fileButton.setOnClickListener (new View.OnClickListener() {
