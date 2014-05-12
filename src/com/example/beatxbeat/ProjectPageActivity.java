@@ -12,6 +12,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -58,55 +62,17 @@ public class ProjectPageActivity extends Activity {
 		recordBtn = (Button) findViewById(R.id.newClip);
 		importBtn = (Button) findViewById(R.id.importClip);
 		transcribeBtn = (Button) findViewById(R.id.transcribeBtn);
-
-		Bundle extras = this.getIntent().getExtras();
-
 		projectNameTextView = (EditText) findViewById(R.id.projectName);
 
-		if (!extras.containsKey(PROJECT_PATH)) {
-			Log.e("ProjectPageActivity", "No project path found. How did you get to this page?");
-		}
-
 		try {
-			if (extras.getString(PROJECT_PATH).length() > 0) {
-				Log.d("ProjectPageActivity", "Opening project file at path: " + extras.getString(PROJECT_PATH));
-				project = new ProjectFile(this, new File(extras.getString(PROJECT_PATH)), null);
-				projectNameTextView.setText(project.getName());
-				if (extras.containsKey(IMPORT_CLIP_PATH)) {
-					File importedClip = new File(extras.getString(IMPORT_CLIP_PATH));
-					String textPath = importedClip.getPath();
-					textPath = textPath.substring(0, textPath.length()-4) + ".txt";
-					Log.d("ProjectPageActivity", "Importing clip at path: " + extras.getString(IMPORT_CLIP_PATH));
-					Log.d("ProjectPageActivity", "Importing result string at path: " + textPath);
-					project.addClip(importedClip, textPath);
-				}				
-			} else {
-				showNamingAlert();
-				project = new ProjectFile(this, null, projectName);
-			}
-			project.save();
-			projectNameTextView.addTextChangedListener(new TextWatcher() {
-				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-				@Override
-				public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-				@Override
-				public void afterTextChanged(Editable s) {
-					projectName = s.toString();
-					project.setProjectName(projectName);
-				}
-			});
+			setupProject();
 			setupClips();
 		} catch (Exception e1) {
 			//all purpose exception catcher
 			e1.printStackTrace();
 		}
 
-		/**
-		 * Try to transcribe the clips listed in the View, show alert dialog on failure
-		 */
+		//Try to transcribe the clips listed in the View, show alert dialog on failure
 		transcribeBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -115,26 +81,19 @@ public class ProjectPageActivity extends Activity {
 				if(!project.getClips().isEmpty()){
 					intent.putExtra(PROJECT_PATH, project.getProjectPath());
 					startActivity(intent);
-					}
+				}
 				else{
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProjectPageActivity.this);
-					// set title
 					alertDialogBuilder.setTitle("Error... :(");
-					// set dialog message
 					alertDialogBuilder
 					.setMessage("Something went wrong, make sure you have clips in your project to transcribe!")
 					.setCancelable(false)
 					.setNeutralButton("Okay",new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,int id) {
-							//return to the project page
-						}
+						public void onClick(DialogInterface dialog,int id) {}
 					});
-					// create alert dialog
 					AlertDialog alertDialog = alertDialogBuilder.create();
-					// show it
 					alertDialog.show();
 				}
-
 			}
 		});
 
@@ -157,7 +116,7 @@ public class ProjectPageActivity extends Activity {
 			}
 		});
 
-		//Setup the method to allow the keyboard to be hidden when clicking elswhere on screen
+		//Setup the method to allow the keyboard to be hidden when clicking elsewhere on screen
 		ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView().findViewById(android.R.id.content).getParent();
 
 		for (int i = 0; i < viewGroup.getChildCount(); i++){
@@ -177,7 +136,6 @@ public class ProjectPageActivity extends Activity {
 		Intent myIntent = new Intent(getApplicationContext(), HomePageActivity.class);
 		startActivityForResult(myIntent, 0);
 		return true;
-
 	}
 
 	/**
@@ -186,8 +144,7 @@ public class ProjectPageActivity extends Activity {
 	 * @param filePath Path of the audio file.
 	 * @throws IOException
 	 */
-	public void playAudio (String filePath) throws IOException
-	{
+	public void playAudio (String filePath) throws IOException {
 		if (filePath==null)
 			return;
 
@@ -275,6 +232,53 @@ public class ProjectPageActivity extends Activity {
 	}
 
 	/**
+	 * Sets up the project for the current session. 
+	 * If creating a new project, it should generate a new project file.
+	 * Otherwise, it should load the existing project so that the clips can be loaded.
+	 * 
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	private void setupProject() throws ParserConfigurationException, SAXException, IOException {
+		Bundle extras = this.getIntent().getExtras();
+		if (!extras.containsKey(PROJECT_PATH)) {
+			Log.e("ProjectPageActivity", "No project path found. How did you get to this page?");
+		}
+
+		if (extras.getString(PROJECT_PATH).length() > 0) {
+			Log.d("ProjectPageActivity", "Opening project file at path: " + extras.getString(PROJECT_PATH));
+			project = new ProjectFile(this, new File(extras.getString(PROJECT_PATH)), null);
+			projectNameTextView.setText(project.getName());
+			if (extras.containsKey(IMPORT_CLIP_PATH)) {
+				File importedClip = new File(extras.getString(IMPORT_CLIP_PATH));
+				String textPath = importedClip.getPath();
+				textPath = textPath.substring(0, textPath.length()-4) + ".txt";
+				Log.d("ProjectPageActivity", "Importing clip at path: " + extras.getString(IMPORT_CLIP_PATH));
+				Log.d("ProjectPageActivity", "Importing result string at path: " + textPath);
+				project.addClip(importedClip, textPath);
+			}				
+		} else {
+			showNamingAlert();
+			project = new ProjectFile(this, null, projectName);
+		}
+		project.save();
+		projectNameTextView.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				projectName = s.toString();
+				project.setProjectName(projectName);
+			}
+		});
+	}
+
+	/**
 	 * Sets up the ScrollView in the middle of the page, which should contain
 	 * all the clips associated with the current project. If the project does 
 	 * not contain any clips, it should display a text box saying "Clips go
@@ -283,7 +287,7 @@ public class ProjectPageActivity extends Activity {
 	private void setupClips() {
 		ScrollView clipNames = (ScrollView) findViewById(R.id.clipName);
 		RelativeLayout options = (RelativeLayout) findViewById(R.id.scroll_linear_layout);
-		
+
 		if (!project.getClips().isEmpty()) {
 			options.removeAllViews();
 			int index = 0;
@@ -297,17 +301,13 @@ public class ProjectPageActivity extends Activity {
 				clip.setId(index+1);
 				clip.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				clip.setWidth(300);
-				//clip.setHeight(7);
 				clip.setBackgroundColor(R.drawable.button_border);
-				//clip.setTextColor(Color.WHITE);
-				//playButton.setText("Play");
 				playButton.setId(playButton.hashCode());
 				playButton.setTextAppearance(this, android.R.style.TextAppearance_Medium);
 				playButton.setBackgroundResource(R.drawable.ic_action_play);
 				playButton.setTextColor(Color.WHITE);
 				String filename = filepath.substring(filepath.lastIndexOf("/")+1);
 				deleteButton.setBackgroundResource(R.drawable.ic_action_discard);
-				//deleteButton.setHeight(8);
 
 				Pattern pattern = Pattern.compile("(?i)([\\s\\w]+).pcm");
 				Matcher matcher = pattern.matcher(filename);
@@ -335,7 +335,7 @@ public class ProjectPageActivity extends Activity {
 					options.addView(clip);
 				}
 				clips.add(clip);
-								
+
 				playButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -355,14 +355,13 @@ public class ProjectPageActivity extends Activity {
 				} 
 				options.addView(playButton, playLP);
 				playButtons.add(playButton);
-				
+
 				deleteButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						showAlertBeforeDelete(new File(filepath));
 					}
 				});
-				//Log.d("ImportActivity", "adding file to linear layout with index " + numFiles);
 				RelativeLayout.LayoutParams deleteLP = new RelativeLayout.LayoutParams(
 						RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 				deleteLP.addRule(RelativeLayout.RIGHT_OF, playButton.getId());
@@ -382,7 +381,7 @@ public class ProjectPageActivity extends Activity {
 			clipNames.addView(createFillerTextView());
 		}
 	}
-	
+
 	/**
 	 * Instantiates and sets up the filler TextView that appears when
 	 * the project has no clips in it.
@@ -443,7 +442,7 @@ public class ProjectPageActivity extends Activity {
 				project.removeClip(pFile, false);
 				project.save();
 				setupClips();
-		}
+			}
 		});
 
 		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
