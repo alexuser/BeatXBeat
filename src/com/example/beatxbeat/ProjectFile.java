@@ -120,24 +120,14 @@ public class ProjectFile {
 	 */
 	public void addClip(File pFile, String resultPath) {
 		Element root = mDoc.getDocumentElement();
-		boolean hasClip = false;			
-		NodeList listClips = root.getChildNodes();
-		for ( int i = 0; i < listClips.getLength(); i++ ) {
-			Element clip = (Element) listClips.item(i);
-			if (clip.getAttribute(CLIP_ATTRIBUTE).equals(pFile.getPath())) {
-				hasClip = true;
-			}
-		}
-		if (!hasClip) {
+		if (!hasClip(pFile.getPath())) {
 			Element clip = mDoc.createElement(CLIP_ATTRIBUTE);
 			clip.setAttribute(CLIP_ATTRIBUTE, pFile.getPath());
 			clip.setAttribute(CLIP_RESULT_ATTRIBUTE, resultPath);
 			root.appendChild(clip);
 			save();
 		}
-		
 	}
-
 
 	/**
 	 * Attempts to remove the recorded clip from the project.
@@ -167,6 +157,25 @@ public class ProjectFile {
 			}
 			save();
 		}
+	}
+	
+	/**
+	 * Checks to see if the clip at the given path is part of the project.
+	 * 
+	 * @param path Path of the clip file.
+	 * @return Returns true if the clip is part of the project. Else returns false.
+	 */
+	public boolean hasClip(String path) {
+		Element root = mDoc.getDocumentElement();
+		boolean hasClip = false;			
+		NodeList listClips = root.getChildNodes();
+		for ( int i = 0; i < listClips.getLength(); i++ ) {
+			Element clip = (Element) listClips.item(i);
+			if (clip.getAttribute(CLIP_ATTRIBUTE).equals(path)) {
+				hasClip = true;
+			}
+		}
+		return hasClip;
 	}
 
 	/**

@@ -30,7 +30,7 @@ public class ImportActivity extends Activity {
 
 	private String mFileType;
 	private String mProjectPath;
-	private String mClipPath;
+	private ProjectFile mProject;
 
 
 	@Override
@@ -56,6 +56,16 @@ public class ImportActivity extends Activity {
 	private void listFiles(CharSequence pName, String fileType) {
 		ScrollView fileList = (ScrollView) findViewById(R.id.file_select_scrollview);
 		RelativeLayout ll = new RelativeLayout(this);
+		
+		if (mFileType.equals(PCM)) {
+			try {
+				mProject = new ProjectFile(this.getBaseContext(), new File(mProjectPath), null);
+			} catch (Exception e) {
+				// all purpose exception catcher
+				e.printStackTrace();
+			} 
+			
+		}
 
 		File[] files = this.getFilesDir().listFiles();
 		int numFiles = 0;
@@ -71,6 +81,9 @@ public class ImportActivity extends Activity {
 						mProjectPath = path;
 						filename = path.substring(path.indexOf("_")+1, path.length()-4);
 					} else {
+						if (mProject.hasClip(path)) {
+							break;
+						}
 						filename = path.substring(path.lastIndexOf("/")+1, path.length()-4);
 					}
 
