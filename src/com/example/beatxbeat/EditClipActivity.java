@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.beatxbeat.RangeSeekBar.OnRangeSeekBarChangeListener;
 
@@ -34,6 +37,8 @@ public class EditClipActivity extends Activity {
 	private int min = 0;
 	private int max = 0;
 	private int size = 0;
+	private static Button play;
+	private static Button done;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,44 +64,46 @@ public class EditClipActivity extends Activity {
 		String resultPath = filepath.substring(0,filepath.length()-4)+".txt";
 		result = new File(resultPath);
 		
+		
 		RangeSeekBar<Integer> seekBar = new RangeSeekBar<Integer>(0, size, this);
 		seekBar.setOnRangeSeekBarChangeListener(new OnRangeSeekBarChangeListener<Integer>() {
 		        @Override
 		        public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
 		              min = minValue;
 		              max = maxValue;
+		              EditClipActivity.play.setVisibility(View.VISIBLE);
+		              EditClipActivity.done.setVisibility(View.VISIBLE);
 		        }
 		});
 		
+		play = (Button) findViewById(R.id.playTrimmed);
 		ViewGroup layout = (ViewGroup) findViewById(R.id.editLayout);
 		layout.addView(seekBar);
 		
-		Button play = (Button) findViewById(R.id.playTrimmed);
+		;
 		play.setOnClickListener(new View.OnClickListener() {         
 		    @Override
 		    public void onClick(View v)
 		    {
-		      // some code
 		    	try {
 					playAudio(pcm, min, max);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 		    }
 		});
 		
-		Button done = (Button) findViewById(R.id.doneEdit);
+		done = (Button) findViewById(R.id.doneEdit);
 		done.setOnClickListener(new View.OnClickListener() {         
 		    @Override
 		    public void onClick(View v)
 		    {
-		      // some code
-		    	trim(pcm, result, min, max);
-		      EditClipActivity.this.finish();
+		    	showAlertBeforeSave(pcm, result, min, max);
 		    }
 		});
-		
+		Toast.makeText(getApplicationContext(), "Press the Android back button to return without trimming.", Toast.LENGTH_LONG ).show();
+		play.setVisibility(View.INVISIBLE);
+		done.setVisibility(View.INVISIBLE);
 	}
 
 	@Override
@@ -274,6 +281,30 @@ public class EditClipActivity extends Activity {
 			at.stop();
 			at.release();
 		}
+	}
+	
+	private void showAlertBeforeSave(final File pcm, final File result, final int min, final int max) {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+		alert.setTitle("Delete Clip");
+		alert.setMessage("Warning: Trim cannot be undone! Press 'Continue' to confirm.");
+
+
+		alert.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				trim(pcm,result,min,max);
+				EditClipActivity.this.finish();
+		}
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// Canceled.
+			}
+		});
+		alert.show();
 	}
 
 }
