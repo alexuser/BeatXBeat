@@ -33,7 +33,7 @@ public class TranscribePageActivity extends Activity {
 	private String voices = "V:one clef=perc name = \"Samp1\"  \\n V:two clef = perc name = \"Samp2\" \\n";
 	private String abcString = "X:1 \\n"
 			+ "T: " + title + " \\n"
-			+ "Q:60\\n "
+			+ "Q:240\\n "
 			+ "L:1/4\\n"
 			+ voices
 			+ beats;
@@ -129,7 +129,7 @@ public class TranscribePageActivity extends Activity {
 		voices = tempVoices;
 		abcString = "X:1 \\n"
 				+ "T: " + title + " \\n"
-				+ "Q:60\\n "
+				+ "Q:240\\n "
 				+ "L:1/4\\n"
 				+ voices
 				+ beats;
