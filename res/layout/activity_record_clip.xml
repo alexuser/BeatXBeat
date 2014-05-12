@@ -10,26 +10,12 @@
     tools:context=".RecordClipActivity" >
 
     <Button
-        android:id="@+id/stopButton"
-        android:drawableRight="@drawable/stopicon"
-        android:enabled="false"
-        android:layout_width="200dp"
-        android:layout_height="30dp"
-        android:layout_below="@+id/startButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="33dp"
-        android:text="Stop Recording" 
-        android:background="@drawable/button_grey"
-      
-        android:textColor="#FFFFFF"/>
-
-    <Button
         android:id="@+id/playButton"
         android:enabled="false"
         android:drawableRight="@drawable/playicon"
         android:layout_width="200dp"
         android:layout_height="30dp"
-        android:layout_below="@+id/stopButton"
+        android:layout_below="@+id/startButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="39dp"
         android:text="Play Recording" 
@@ -45,6 +31,15 @@
         android:layout_marginTop="78dp"
         android:textSize="30sp"
         android:visibility="invisible" />
+    
+    <TextView
+        android:id="@+id/beatDetector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chronometer"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
         android:id="@+id/backButton"
@@ -59,7 +54,7 @@
         android:id="@+id/startButton"
         android:layout_width="200dp"
         android:layout_height="30dp"
-        android:layout_alignLeft="@+id/stopButton"
+        android:layout_centerHorizontal="true"
         android:layout_below="@+id/chronometer"
         android:layout_marginTop="52dp"
         android:background="@drawable/button_grey"
@@ -67,13 +62,17 @@
         android:text="Start Recording"
         android:textColor="#FFFFFF" />
 
-    <TextView
-        android:id="@+id/beatDetector"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/chronometer"
+    <Button
+        android:id="@+id/stopButton"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
         android:layout_centerHorizontal="true"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_below="@+id/chronometer"
+        android:layout_marginTop="52dp"        
+        android:background="@drawable/button_grey"
+        android:drawableRight="@drawable/stopicon"
+        android:enabled="false"
+        android:text="Stop Recording"
+        android:textColor="#FFFFFF" />
 
 </RelativeLayout>

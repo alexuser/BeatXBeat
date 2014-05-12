@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import be.hogent.tarsos.dsp.AudioEvent;
 import be.hogent.tarsos.dsp.onsets.OnsetHandler;
 import be.hogent.tarsos.dsp.onsets.PercussionOnsetDetector;
@@ -51,6 +52,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	private static String filePath="";
 	private static String txtPath="";
 	private static String result = "";
+	private static int minBufferSize = -1;
 	private String randomName = "";
 	private Chronometer chrono;
 	Thread playingThread;
@@ -87,6 +89,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			e1.printStackTrace();
 		}
 
+		prepareRecordingUI();
+		
 		/**
 		 * Hide "start recording" button
 		 * Enable "stop recording" button
@@ -97,9 +101,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			@Override
 			public void onClick(View arg0) {
 				beatList = new ArrayList<Double>();
-				startRecording.setVisibility(View.INVISIBLE);
-				stopRecording.setVisibility(View.VISIBLE);
-				playRecording.setVisibility(View.INVISIBLE);
 				listen();
 			}
 		});
@@ -109,9 +110,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			@SuppressWarnings("deprecation")
 			@Override
 			public void onClick(View v) {
-				startRecording.setVisibility(View.VISIBLE);
-				stopRecording.setVisibility(View.INVISIBLE);
-				playRecording.setVisibility(View.VISIBLE);
 				if (isRecording){
 					isRecording = false;
 					resetRecorder();
@@ -119,6 +117,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				} else {
 					resetRecorder();
 				}
+				setupAfterRecordUI();
 			}
 		});
 
@@ -128,6 +127,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			public void onClick(View v) {
 				startRecording.setVisibility(View.INVISIBLE);
 				stopRecording.setVisibility(View.VISIBLE);
+				stopRecording.setText("Stop Playback");
 				playRecording.setVisibility(View.INVISIBLE);
 				
 				playingThread = new Thread(new Runnable() {
@@ -146,6 +146,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		                        	playRecording.setVisibility(View.VISIBLE);
 		                        	stopRecording.setVisibility(View.INVISIBLE);
 		                        	startRecording.setVisibility(View.VISIBLE);
+		                        	stopChrono();
 		                        }
 		                    });
 						}
@@ -153,7 +154,9 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 
 				});
 				playingThread.start();
+				stopRecording.setText("Stop Recording");
 			}
+			
 		});
 
 		backbtn.setOnClickListener(new View.OnClickListener() {
@@ -173,22 +176,14 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 
 
 		// STEP 1: set up recorder... same as in loopback example
-		int minBufferSize = AudioRecord.getMinBufferSize(
-				SAMPLE_RATE,
-				AudioFormat.CHANNEL_IN_MONO,
-				AudioFormat.ENCODING_PCM_16BIT);
-		buffer = new byte[minBufferSize];
-		recorder = new AudioRecord(
-				MediaRecorder.AudioSource.MIC,
-				SAMPLE_RATE,
-				AudioFormat.CHANNEL_IN_MONO,
-				AudioFormat.ENCODING_PCM_16BIT,
-				minBufferSize);
+		setupRecorder();
 		// END STEP 1
 
 		// STEP 2: create percussion detector
 		mPercussionOnsetDetector = new PercussionOnsetDetector(SAMPLE_RATE, minBufferSize/2, this, 80, 10);
 		// END STEP 2
+		
+		Toast.makeText(getApplicationContext(), "Press \"Start Recording\" to record a beat!", Toast.LENGTH_LONG ).show();
 
 	}
 
@@ -198,40 +193,53 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		getMenuInflater().inflate(R.menu.record_clip, menu);
 		return true;
 	}
+	
+	private void startChrono(){
+		chrono.setBase(SystemClock.elapsedRealtime());
+		chrono.setVisibility(View.VISIBLE);
+		chrono.start();
+	}
+	
+	private void stopChrono(){
+		chrono.setVisibility(View.INVISIBLE);
+		chrono.stop();
+	}
 
-
+	private void prepareRecordingUI(){
+		startRecording.setVisibility(View.VISIBLE);
+		stopRecording.setVisibility(View.INVISIBLE);
+		playRecording.setVisibility(View.INVISIBLE);
+	}
+	
 	/**
 	 * Set UI elements for recording mode
 	 * 
 	 */
 	private void setupRecordingUI() {
-//		stopRecording.setEnabled(true);
-//		playRecording.setEnabled(false);
-//		startRecording.setEnabled(false);
-		chrono.setBase(SystemClock.elapsedRealtime());
-		chrono.setVisibility(View.VISIBLE);
-		chrono.start();
+		startRecording.setVisibility(View.INVISIBLE);
+		stopRecording.setVisibility(View.VISIBLE);
+		playRecording.setVisibility(View.INVISIBLE);
+		startChrono();
 	}
 
-	private void setupReadytoRecordUI() {
-//		stopRecording.setEnabled(false);
-//		playRecording.setEnabled(true);
-//		startRecording.setEnabled(false);
-		chrono.setVisibility(View.INVISIBLE);
-		chrono.stop();
-		chrono.setBase(SystemClock.elapsedRealtime());
+	
+	private void setupAfterRecordUI(){
+		startRecording.setVisibility(View.VISIBLE);
+		startRecording.setText("Record Another");
+		stopRecording.setVisibility(View.INVISIBLE);
+		playRecording.setVisibility(View.VISIBLE);
+		playRecording.setText("Play " + fileName);
+		stopChrono();
 	}
 
 	public void playAudio () throws IOException
 	{
-//		playRecording.setEnabled(false);
-//		startRecording.setEnabled(false);
-//		stopRecording.setEnabled(true);
+
 		if (filePath==null){
 			Log.d("plaback", "file not found for playback in RecordClipActivity");
 			return;
 		}
-
+		
 		//Reading the file..
 		byte[] byteData = null; 
 		File file = null; 
@@ -258,11 +266,19 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				intSize, 
 				AudioTrack.MODE_STREAM); 
 		if (at!=null) { 
+			runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                	startChrono();
+                }
+			});
 			at.play();
 			// Write the byte array to the track
 			at.write(byteData, 0, byteData.length); 
 			at.stop();
-			at.release();
+			at.release(); 
+
 		} //else
 		//			Log.d("TCAudio", "audio track is not initialised ");
 	}
@@ -280,8 +296,10 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		input.setSelection(input.getText().length());
 		input.setSelectAllOnFocus(true);
 		alert.setView(input);
+		RecordClipActivity.fileName = input.getText().toString();
 		alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-
+			
+			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				if (input.getText().toString() != randomName) {
@@ -296,7 +314,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				} else {
 					fileName = randomName;
 				}
-				setupReadytoRecordUI();
 				File clip = new File(filePath);
 				result = generateBeatTime();
 				project.addClip(clip, txtPath);
@@ -382,11 +399,24 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 
 			recorder.stop();
 			recorder.release();
-
-			recorder = null;
+			setupRecorder();
+			
 			listeningThread = null;
 		}
-		setupReadytoRecordUI();
+	}
+	
+	private void setupRecorder(){
+		RecordClipActivity.minBufferSize = AudioRecord.getMinBufferSize(
+				SAMPLE_RATE,
+				AudioFormat.CHANNEL_IN_MONO,
+				AudioFormat.ENCODING_PCM_16BIT);
+		buffer = new byte[minBufferSize];
+		recorder = new AudioRecord(
+				MediaRecorder.AudioSource.MIC,
+				SAMPLE_RATE,
+				AudioFormat.CHANNEL_IN_MONO,
+				AudioFormat.ENCODING_PCM_16BIT,
+				minBufferSize);
 	}
 
 	@Override
