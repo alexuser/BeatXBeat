@@ -323,6 +323,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 					writer.println(result);
 					writer.close();
 					Log.d("RecordClipActivity", "result written at path: " + txtPath);
+					Toast.makeText(getApplicationContext(), fileName + " has been added to your project view", Toast.LENGTH_LONG ).show();
 				} catch (Exception e) {
 					//all purpose exception catcher
 					e.printStackTrace();

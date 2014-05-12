@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ProjectPageActivity extends Activity {
 
@@ -121,7 +122,7 @@ public class ProjectPageActivity extends Activity {
 					alertDialogBuilder.setTitle("Error... :(");
 					// set dialog message
 					alertDialogBuilder
-					.setMessage("Something went wrong, make sure you have clips in your project to transcribe")
+					.setMessage("Something went wrong, make sure you have clips in your project to transcribe!")
 					.setCancelable(false)
 					.setNeutralButton("Okay",new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int id) {
@@ -262,6 +263,7 @@ public class ProjectPageActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				projectName = input.getText().toString();
 				projectNameTextView.setText(projectName);
+				Toast.makeText(getApplicationContext(), "Record a new clip or import to defeat the loneliness!", Toast.LENGTH_LONG ).show();
 			}
 		});
 
@@ -281,7 +283,7 @@ public class ProjectPageActivity extends Activity {
 	private void setupClips() {
 		ScrollView clipNames = (ScrollView) findViewById(R.id.clipName);
 		RelativeLayout options = (RelativeLayout) findViewById(R.id.scroll_linear_layout);
-
+		
 		if (!project.getClips().isEmpty()) {
 			options.removeAllViews();
 			int index = 0;
@@ -372,6 +374,9 @@ public class ProjectPageActivity extends Activity {
 			}
 			clipNames.removeAllViews();
 			clipNames.addView(options);
+			if(project.getClips().size() < 2){
+				Toast.makeText(getApplicationContext(), "Generate sheet music by hitting the \"Transcribe\" button at the top right", Toast.LENGTH_LONG ).show();
+			}
 		} else {
 			clipNames.removeAllViews();
 			clipNames.addView(createFillerTextView());
@@ -391,7 +396,7 @@ public class ProjectPageActivity extends Activity {
 		params.setMargins(0, 38, 0, 0);
 		tv.setLayoutParams(params);
 		tv.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-		tv.setText("Recordings Go Here");
+		tv.setText("Aww, you don't have any clips. \nRecordings go here!");
 		return tv;
 	}
 
