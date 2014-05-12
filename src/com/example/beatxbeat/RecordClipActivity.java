@@ -154,7 +154,6 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 
 				});
 				playingThread.start();
-				stopRecording.setText("Stop Recording");
 			}
 			
 		});
@@ -218,6 +217,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 	private void setupRecordingUI() {
 		startRecording.setVisibility(View.INVISIBLE);
 		stopRecording.setVisibility(View.VISIBLE);
+		stopRecording.setText("Stop Recording");
 		playRecording.setVisibility(View.INVISIBLE);
 		startChrono();
 	}
@@ -270,6 +270,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 
                 @Override
                 public void run() {
+                	stopRecording.setText("Stop Playback");
                 	startChrono();
                 }
 			});
@@ -323,7 +324,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 					writer.println(result);
 					writer.close();
 					Log.d("RecordClipActivity", "result written at path: " + txtPath);
-					Toast.makeText(getApplicationContext(), fileName + " has been added to your project view", Toast.LENGTH_LONG ).show();
+					Toast.makeText(getApplicationContext(), fileName + " has been saved and added to your project view", Toast.LENGTH_LONG ).show();
 				} catch (Exception e) {
 					//all purpose exception catcher
 					e.printStackTrace();
@@ -426,7 +427,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 		final TextView beatDetector = (TextView) findViewById(R.id.beatDetector);
 		runOnUiThread(new Runnable() {
 			public void run() {
-				new CountDownTimer(500, 250) {
+				new CountDownTimer(250, 250) {
 
 					public void onTick(long millisUntilFinished) {
 						beatDetector.setText("Beat!");
