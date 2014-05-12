@@ -77,7 +77,7 @@ public class ProjectPageActivity extends Activity {
 					textPath = textPath.substring(0, textPath.length()-4) + ".txt";
 					Log.d("ProjectPageActivity", "Importing clip at path: " + extras.getString(IMPORT_CLIP_PATH));
 					Log.d("ProjectPageActivity", "Importing result string at path: " + textPath);
-					project.addClip(importedClip, getResultString(textPath));
+					project.addClip(importedClip, textPath);
 				}				
 			} else {
 				showNamingAlert();
@@ -424,24 +424,7 @@ public class ProjectPageActivity extends Activity {
 		}
 	}
 
-	/**
-	 * Reads the .txt file and extracts the beat transcription result string.
-	 * @param path Path of the text file containing result string.
-	 * @return the Result string in the text file
-	 * @throws IOException
-	 */
-	private String getResultString(String path) throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(path));
-		String nextLine = reader.readLine();
-		String resultString = "";
-		while (nextLine != null) {
-			resultString = resultString + nextLine;
-			nextLine = reader.readLine();
-		}
-		reader.close();
-		return resultString;
-	}
-	
+
 	private void showAlertBeforeDelete(final File pFile) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 

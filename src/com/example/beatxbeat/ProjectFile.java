@@ -1,7 +1,9 @@
 package com.example.beatxbeat;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -116,11 +118,11 @@ public class ProjectFile {
 	 * @param pFile The file of the recorded clip.
 	 * @param result The string representation of the beat time of the clip.
 	 */
-	public void addClip(File pFile, String result){
+	public void addClip(File pFile, String resultPath){
 		Element root = mDoc.getDocumentElement();
 		Element clip = mDoc.createElement(CLIP_ATTRIBUTE);
 		clip.setAttribute(CLIP_ATTRIBUTE, pFile.getPath());
-		clip.setAttribute(CLIP_RESULT_ATTRIBUTE, result);
+		clip.setAttribute(CLIP_RESULT_ATTRIBUTE, resultPath);
 		root.appendChild(clip);
 		save();
 	}
@@ -187,7 +189,13 @@ public class ProjectFile {
 			if (clip.hasAttribute(CLIP_ATTRIBUTE)) {
 				String clipPath = clip.getAttribute(CLIP_ATTRIBUTE);
 				String clipName = clipPath.substring(clipPath.lastIndexOf("/"));
-				String clipResult = clip.getAttribute(CLIP_RESULT_ATTRIBUTE);
+				String clipResult = null;
+				try {
+					clipResult = getResultString(clip.getAttribute(CLIP_RESULT_ATTRIBUTE));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				results.put(clipName, clipResult);
 			}
 		}
@@ -226,6 +234,24 @@ public class ProjectFile {
 	public String getProjectPath() {
 		String path = mContext.getFilesDir().getPath() + "/beatxproject_" + mName + ".xml";
 		return path;
+	}
+	
+	/**
+	 * Reads the .txt file and extracts the beat transcription result string.
+	 * @param path Path of the text file containing result string.
+	 * @return the Result string in the text file
+	 * @throws IOException
+	 */
+	private String getResultString(String path) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(path));
+		String nextLine = reader.readLine();
+		String resultString = "";
+		while (nextLine != null) {
+			resultString = resultString + nextLine;
+			nextLine = reader.readLine();
+		}
+		reader.close();
+		return resultString;
 	}
 
 

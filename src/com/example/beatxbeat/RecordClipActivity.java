@@ -299,7 +299,7 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 				setupReadytoRecordUI();
 				File clip = new File(filePath);
 				result = generateBeatTime();
-				project.addClip(clip, result);
+				project.addClip(clip, txtPath);
 				PrintWriter writer;
 				try {
 					writer = new PrintWriter(txtPath, "UTF-8");
