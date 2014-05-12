@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -131,9 +132,10 @@ public class EditClipActivity extends Activity {
 			read.close();
 			trimmedResult.createNewFile();
 			write = new FileWriter(trimmedResult);
-			int beg = (int) ((double)min/size * charData.length);
-			int en = (int) ((double)(max-min)/size * charData.length);
-			write.write(charData, beg, en);
+			double beg = ((double)min)/size;
+			double en = ((double)max)/size;
+			String trimmed = getTrimmed(charData, beg, en);
+			write.write(trimmed);
 			write.flush();
 			write.close();
 			trimmedResult.renameTo(rFile);
@@ -143,6 +145,76 @@ public class EditClipActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private String getTrimmed(char[] charArray, double beg, double end) {
+		ArrayList<Character> temp = new ArrayList<Character>();
+		ArrayList<Character> trimmed = new ArrayList<Character>();
+		String trimmedResult = "";
+		//convert the result into notes and rests
+		for (char c: charArray) {
+			if (c == 'C') {
+				temp.add('C');
+			}
+			else if (c == '1') {
+				temp.add('z');
+			}
+			else if (c == '2') {
+				temp.add('z');
+				temp.add('z');
+			}
+			else if (c == '3') {
+				temp.add('z');
+				temp.add('z');
+				temp.add('z');
+			}
+			else if (c == '4') {
+				temp.add('z');
+				temp.add('z');
+				temp.add('z');
+				temp.add('z');
+			}
+		}
+		int pos = 0;
+		int count = 0;
+		//add the notes and rests and bars for the trimmed region
+		for (int i = (int) (beg * temp.size()); i < (int) (end * temp.size()); i++) {
+			System.out.println(i);
+			if (temp.get(i) == 'z') {
+				count++;
+				pos++;
+				if (pos == 4) {
+					trimmed.add('z');
+					trimmed.add((char) (((int) '0') + count));
+					trimmed.add('|');
+					pos = 0;
+					count = 0;
+				}
+			} 
+			else if (temp.get(i) == 'C') {
+				if (count != 0) {
+					trimmed.add('z');
+					trimmed.add((char) (((int) '0') + count));
+					count = 0;
+				}
+				trimmed.add('C');
+				pos++;
+				if (pos == 4) {
+					trimmed.add('|');
+					pos = 0;
+				}
+			}
+		}
+		if (pos != 0) {
+			trimmed.add('z');
+			trimmed.add((char) (((int) '0') + (4 - pos + count)));
+			trimmed.add('|');
+		}
+		//convert the result to a string
+		for (char c: trimmed) {
+			trimmedResult += c;
+		}
+		return trimmedResult;
 	}
 
 
