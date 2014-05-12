@@ -444,9 +444,8 @@ public class RecordClipActivity extends Activity implements OnsetHandler{
 			}
 			//if there are full measures of rest, add them
 			while (length >= 4) {
-				stringBuilder.append("z4");
+				stringBuilder.append("z4|");
 				length -= 4;
-				stringBuilder.append("|");
 				measurePosition = 0;
 			}
 			//add the leftover rest
